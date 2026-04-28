@@ -1,0 +1,2531 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mariano App</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0d2461;
+    --navy-light: #1a3a8f;
+    --gold: #c9931a;
+    --gold-light: #f0b429;
+    --cream: #fdf8ee;
+    --white: #ffffff;
+    --gray: #6b7280;
+    --gray-light: #f3f4f6;
+    --success: #16a34a;
+    --danger: #dc2626;
+    --shadow: 0 4px 24px rgba(13,36,97,0.13);
+    --radius: 16px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--navy);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* HEADER */
+  header {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%);
+    color: white;
+    padding: 18px 24px 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 2px 12px rgba(13,36,97,0.25);
+    position: sticky; top: 0; z-index: 100;
+  }
+
+  .header-brand {
+    display: flex; align-items: center; gap: 10px;
+  }
+
+  .header-logo {
+    width: 40px; height: 40px;
+    background: var(--gold);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+  }
+
+  .header-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 900;
+    letter-spacing: -0.5px;
+  }
+
+  .header-sub {
+    font-size: 11px;
+    opacity: 0.7;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .header-date {
+    text-align: right;
+    font-size: 12px;
+    opacity: 0.8;
+  }
+
+  /* NAV */
+  nav {
+    background: var(--white);
+    display: flex;
+    border-bottom: 2px solid var(--gray-light);
+    overflow-x: auto;
+    scrollbar-width: none;
+    position: sticky; top: 76px; z-index: 99;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+
+  nav::-webkit-scrollbar { display: none; }
+
+  .nav-btn {
+    flex: 1; min-width: 80px;
+    padding: 14px 8px 12px;
+    border: none; background: none;
+    cursor: pointer;
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px; font-weight: 500;
+    color: var(--gray);
+    transition: all 0.2s;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -2px;
+    white-space: nowrap;
+  }
+
+  .nav-btn .icon { font-size: 20px; }
+
+  .nav-btn.active {
+    color: var(--navy);
+    border-bottom-color: var(--gold);
+    font-weight: 600;
+  }
+
+  .nav-btn:hover { color: var(--navy); }
+
+  /* CONTENT */
+  .content {
+    padding: 20px 16px 100px;
+    max-width: 600px;
+    margin: 0 auto;
+    width: 100%;
+    flex: 1;
+  }
+
+  .section { display: none; }
+  .section.active { display: block; }
+
+  /* CARDS */
+  .card {
+    background: var(--white);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 16px;
+    box-shadow: var(--shadow);
+    border: 1px solid rgba(13,36,97,0.07);
+  }
+
+  .card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 16px;
+    display: flex; align-items: center; gap: 8px;
+  }
+
+  /* FORMS */
+  .form-group { margin-bottom: 14px; }
+
+  label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--navy);
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  input, select, textarea {
+    width: 100%;
+    padding: 12px 14px;
+    border: 2px solid #e5e7eb;
+    border-radius: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    color: var(--navy);
+    background: var(--cream);
+    transition: border 0.2s;
+    outline: none;
+  }
+
+  input:focus, select:focus, textarea:focus {
+    border-color: var(--gold);
+    background: white;
+  }
+
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+  /* BUTTONS */
+  .btn {
+    padding: 14px 20px;
+    border: none; border-radius: 12px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px; font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, var(--navy), var(--navy-light));
+    color: white; width: 100%;
+  }
+
+  .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(13,36,97,0.3); }
+
+  .btn-gold {
+    background: linear-gradient(135deg, var(--gold), var(--gold-light));
+    color: white; width: 100%;
+  }
+
+  .btn-gold:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(201,147,26,0.4); }
+
+  .btn-sm {
+    padding: 8px 14px;
+    font-size: 13px;
+    border-radius: 8px;
+    width: auto;
+  }
+
+  .btn-outline {
+    background: transparent;
+    border: 2px solid var(--navy);
+    color: var(--navy);
+  }
+
+  .btn-danger {
+    background: var(--danger);
+    color: white;
+  }
+
+  /* QUOTE RESULT */
+  .quote-result {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%);
+    border-radius: var(--radius);
+    padding: 24px;
+    color: white;
+    margin-top: 16px;
+    display: none;
+  }
+
+  .quote-result.show { display: block; animation: popIn 0.3s ease; }
+
+  @keyframes popIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  .quote-amount {
+    font-family: 'Playfair Display', serif;
+    font-size: 42px;
+    font-weight: 900;
+    color: var(--gold-light);
+    text-align: center;
+    margin: 12px 0;
+  }
+
+  .quote-breakdown {
+    background: rgba(255,255,255,0.1);
+    border-radius: 10px;
+    padding: 14px;
+    margin-top: 14px;
+  }
+
+  .quote-line {
+    display: flex; justify-content: space-between;
+    padding: 4px 0;
+    font-size: 14px;
+    opacity: 0.9;
+  }
+
+  .quote-line.total {
+    border-top: 1px solid rgba(255,255,255,0.3);
+    margin-top: 6px; padding-top: 10px;
+    font-weight: 700; font-size: 16px; opacity: 1;
+  }
+
+  /* CHIPS */
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+
+  .chip {
+    padding: 8px 14px;
+    border-radius: 30px;
+    border: 2px solid #e5e7eb;
+    background: white;
+    font-size: 13px; font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: var(--navy);
+  }
+
+  .chip.selected {
+    background: var(--navy);
+    border-color: var(--navy);
+    color: white;
+  }
+
+  .chip:hover { border-color: var(--navy); }
+
+  /* STATS */
+  .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+
+  .stat-card {
+    background: var(--white);
+    border-radius: var(--radius);
+    padding: 18px;
+    box-shadow: var(--shadow);
+    border-left: 4px solid var(--gold);
+  }
+
+  .stat-val {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px;
+    font-weight: 900;
+    color: var(--navy);
+  }
+
+  .stat-label { font-size: 12px; color: var(--gray); margin-top: 2px; }
+
+  /* LIST ITEMS */
+  .list-item {
+    background: white;
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 8px rgba(13,36,97,0.08);
+    display: flex; align-items: center; gap: 12px;
+    border: 1px solid rgba(13,36,97,0.06);
+  }
+
+  .list-icon {
+    width: 42px; height: 42px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+  }
+
+  .list-info { flex: 1; }
+  .list-title { font-weight: 600; font-size: 15px; }
+  .list-sub { font-size: 12px; color: var(--gray); margin-top: 2px; }
+  .list-amount { font-weight: 700; color: var(--success); font-size: 16px; text-align: right; }
+
+  /* BADGE */
+  .badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .badge-gold { background: #fef3c7; color: #92400e; }
+  .badge-blue { background: #dbeafe; color: #1e3a8a; }
+  .badge-green { background: #dcfce7; color: #166534; }
+  .badge-gray { background: #f3f4f6; color: #4b5563; }
+
+  /* AGENDA */
+  .agenda-day {
+    font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 1px;
+    color: var(--gold);
+    margin: 16px 0 8px;
+  }
+
+  .agenda-item {
+    background: white;
+    border-radius: 12px;
+    padding: 14px;
+    margin-bottom: 8px;
+    box-shadow: 0 2px 8px rgba(13,36,97,0.08);
+    border-left: 4px solid var(--navy);
+    display: flex; align-items: center; gap: 12px;
+  }
+
+  .agenda-time {
+    font-weight: 700; font-size: 14px;
+    color: var(--navy); min-width: 55px;
+    text-align: center;
+  }
+
+  .agenda-info { flex: 1; }
+  .agenda-name { font-weight: 600; font-size: 14px; }
+  .agenda-desc { font-size: 12px; color: var(--gray); margin-top: 2px; }
+
+  /* TOAST */
+  .toast {
+    position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%) translateY(20px);
+    background: var(--navy);
+    color: white; padding: 12px 24px;
+    border-radius: 30px; font-size: 14px; font-weight: 500;
+    box-shadow: 0 8px 24px rgba(13,36,97,0.4);
+    z-index: 200; opacity: 0; pointer-events: none;
+    transition: all 0.3s;
+  }
+
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* EMPTY STATE */
+  .empty {
+    text-align: center; padding: 40px 20px;
+    color: var(--gray);
+  }
+  .empty-icon { font-size: 48px; margin-bottom: 12px; }
+  .empty-text { font-size: 15px; }
+
+  /* MODAL */
+  .modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 300;
+    display: none; align-items: flex-end; justify-content: center;
+  }
+  .modal-overlay.show { display: flex; }
+
+  .modal {
+    background: white;
+    border-radius: 24px 24px 0 0;
+    padding: 24px 20px 40px;
+    width: 100%; max-width: 600px;
+    max-height: 90vh; overflow-y: auto;
+    animation: slideUp 0.3s ease;
+  }
+
+  @keyframes slideUp {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+  }
+
+  .modal-handle {
+    width: 40px; height: 4px;
+    background: #e5e7eb; border-radius: 2px;
+    margin: 0 auto 20px;
+  }
+
+  /* DIVIDER */
+  .divider { height: 1px; background: #e5e7eb; margin: 16px 0; }
+
+  /* NOTIF BANNER */
+  .notif-banner {
+    background: linear-gradient(135deg, #f0b429, #c9931a);
+    color: white;
+    padding: 12px 16px;
+    display: flex; align-items: center; gap: 10px;
+    font-size: 13px; font-weight: 500;
+    cursor: pointer;
+  }
+  .notif-banner.hidden { display: none; }
+  .notif-banner-icon { font-size: 20px; flex-shrink: 0; }
+  .notif-banner-close { margin-left:auto; font-size:18px; opacity:0.8; background:none; border:none; color:white; cursor:pointer; }
+
+  .disc-chip {
+    padding: 8px 10px;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.12);
+    font-size: 12px; font-weight: 500;
+    cursor: pointer;
+    text-align: center;
+    border: 2px solid transparent;
+    transition: all 0.2s;
+    color: white;
+  }
+  .disc-chip.selected {
+    background: var(--gold);
+    border-color: var(--gold-light);
+    font-weight: 700;
+  }
+
+  .btn-maps {
+    background: linear-gradient(135deg, #1a73e8, #0d5bd1);
+    color: white;
+    width: 100%;
+    padding: 12px;
+    border: none; border-radius: 12px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px; font-weight: 600;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    margin-top: 4px;
+  }
+
+  .btn-whatsapp-client {
+    background: #25d366;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 7px 12px;
+    font-size: 12px; font-weight: 600;
+    cursor: pointer;
+    display: inline-flex; align-items: center; gap: 4px;
+    margin-top: 4px;
+  }
+
+  /* SCROLL TOP */
+  .section-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 16px;
+  }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 24px; font-weight: 900;
+    color: var(--navy);
+  }
+
+  /* Extras checkboxes */
+  .extras-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+
+  .extra-item {
+    display: flex; align-items: center; gap: 8px;
+    padding: 10px 12px;
+    border: 2px solid #e5e7eb;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: white;
+  }
+  .extra-item.checked { border-color: var(--gold); background: #fef3c7; }
+  .extra-item input { width: auto; display: none; }
+  .extra-label { font-size: 13px; font-weight: 500; }
+  .extra-price { font-size: 11px; color: var(--gold); font-weight: 600; margin-top: 1px; }
+
+  /* Share button */
+  .btn-whatsapp {
+    background: #25d366;
+    color: white;
+    width: 100%;
+    margin-top: 10px;
+  }
+  /* BUSY MODE */
+  .busy-btn {
+    background: rgba(255,255,255,0.15);
+    border: 2px solid rgba(255,255,255,0.4);
+    color: white;
+    border-radius: 20px;
+    padding: 6px 12px;
+    font-size: 12px; font-weight: 600;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    transition: all 0.2s;
+  }
+  .busy-btn.active {
+    background: var(--danger);
+    border-color: var(--danger);
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-brand">
+    <div class="header-logo">🚗</div>
+    <div>
+      <div class="header-title">Mariano</div>
+      <div class="header-sub">Tu tiempo es valioso</div>
+    </div>
+  </div>
+  <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
+    <div class="header-date" id="headerDate"></div>
+    <button class="busy-btn" id="busyBtn" onclick="toggleBusy()">🟢 Disponible</button>
+  </div>
+</header>
+
+<!-- NOTIF BANNER -->
+<div class="notif-banner" id="notifBanner" onclick="requestNotifPermission()">
+  <span class="notif-banner-icon">🔔</span>
+  <span>Activá las notificaciones para recordatorios 30 min antes de cada servicio</span>
+  <button class="notif-banner-close" onclick="event.stopPropagation();dismissBanner()">✕</button>
+</div>
+
+<nav>
+  <button class="nav-btn active" onclick="showSection('cotizador')" id="nav-cotizador">
+    <span class="icon">🧮</span> Cotizar
+  </button>
+  <button class="nav-btn" onclick="showSection('agenda')" id="nav-agenda">
+    <span class="icon">📅</span> Agenda
+  </button>
+  <button class="nav-btn" onclick="showSection('clientes')" id="nav-clientes">
+    <span class="icon">👥</span> Clientes
+  </button>
+  <button class="nav-btn" onclick="showSection('historial')" id="nav-historial">
+    <span class="icon">📋</span> Historial
+  </button>
+  <button class="nav-btn" onclick="showSection('ganancias')" id="nav-ganancias">
+    <span class="icon">💰</span> Ganancias
+  </button>
+  <button class="nav-btn" onclick="showSection('cierre')" id="nav-cierre">
+    <span class="icon">📊</span> Cierre
+  </button>
+</nav>
+
+<div class="content">
+
+  <!-- ===== COTIZADOR ===== -->
+  <div class="section active" id="sec-cotizador">
+    <div class="section-header">
+      <div class="section-title">Cotizador</div>
+    </div>
+
+    <!-- CONFIG GASOLINA -->
+    <div class="card" style="border-left: 4px solid var(--gold); padding: 14px 16px;">
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:10px">
+        <div style="font-weight:700; font-size:14px;">⛽ Config. vehículo</div>
+        <span style="font-size:11px; color:var(--gray)">Afecta todos los cálculos</span>
+      </div>
+      <div class="row">
+        <div class="form-group" style="margin-bottom:8px">
+          <label>Precio litro (₡)</label>
+          <input type="number" id="config-gas-precio" placeholder="628" min="0" oninput="saveGasConfig()" style="background:white">
+        </div>
+        <div class="form-group" style="margin-bottom:8px">
+          <label>Km por litro</label>
+          <input type="number" id="config-rendimiento" placeholder="10" min="1" oninput="saveGasConfig()" style="background:white">
+        </div>
+      </div>
+      <div class="form-group" style="margin-bottom:0">
+        <label>Desgaste vehículo (₡ por km)</label>
+        <input type="number" id="config-desgaste" placeholder="40" min="0" oninput="saveGasConfig()" style="background:white">
+      </div>
+      <div style="font-size:11px;color:var(--gray);margin-top:6px">Aceite, llantas, frenos, etc. Sugerido: ₡40/km</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🚗 Tipo de servicio</div>
+      <div class="chips" id="serviceChips">
+        <div class="chip selected" onclick="selectService(this,'ride')">🚗 Ride</div>
+        <div class="chip" onclick="selectService(this,'mandado')">🛍️ Mandado</div>
+        <div class="chip" onclick="selectService(this,'tramite')">📋 Trámite</div>
+        <div class="chip" onclick="selectService(this,'pago')">📄 Pago Serv.</div>
+        <div class="chip" onclick="selectService(this,'entrega')">📦 Entrega</div>
+        <div class="chip" onclick="selectService(this,'deposito')">🏦 Depósito/Retiro</div>
+        <div class="chip" onclick="selectService(this,'aero_salida')">✈️ Aero. Salida</div>
+        <div class="chip" onclick="selectService(this,'aero_llegada')">🛬 Aero. Llegada</div>
+        <div class="chip" onclick="selectService(this,'especial')">🗺️ Traslado Esp.</div>
+      </div>
+    </div>
+
+    <!-- RIDE -->
+    <div class="card" id="form-ride">
+      <div class="card-title">📍 Detalles del viaje</div>
+      <div class="form-group">
+        <label>📍 Lugar de inicio</label>
+        <input type="text" id="origen" placeholder="Ej: Curridabat, San José" oninput="calcQuote();checkMapsBtn()">
+      </div>
+      <div class="form-group">
+        <label>🏁 Lugar de destino</label>
+        <input type="text" id="destino" placeholder="Ej: Aeropuerto Juan Santamaría" oninput="calcQuote();checkMapsBtn()">
+      </div>
+      <button class="btn btn-maps" onclick="abrirMaps()" id="mapsBtn" style="display:none">
+        🗺️ Ver ruta en Google Maps
+      </button>
+      <div id="maps-hint" style="font-size:12px;color:var(--gray);margin-top:8px;display:none">
+        👆 Abrí Maps, anotá los km de la ruta y escribilos abajo
+      </div>
+      <div class="form-group" style="margin-top:12px">
+        <label>Kilómetros de la ruta</label>
+        <input type="number" id="km" placeholder="Ej: 5" min="0" oninput="calcQuote()">
+      </div>
+      <div class="form-group">
+        <label>Minutos de espera</label>
+        <input type="number" id="espera" placeholder="0" min="0" oninput="calcQuote()">
+      </div>
+    </div>
+
+    <!-- MANDADO -->
+    <div class="card" id="form-mandado" style="display:none">
+      <div class="card-title">🛍️ Detalles del mandado</div>
+      <div class="form-group">
+        <label>📍 Lugar de recogida <span style="color:var(--gray);font-weight:400">(opcional)</span></label>
+        <input type="text" id="mandado-origen" placeholder="Ej: Tu casa, Curridabat">
+      </div>
+      <div class="form-group">
+        <label>🏪 Lugar de destino / compra</label>
+        <input type="text" id="mandado-destino" placeholder="Ej: Farmacia, Supermercado, Mall">
+      </div>
+      <div class="form-group">
+        <label>🏁 Lugar de entrega <span style="color:var(--gray);font-weight:400">(opcional)</span></label>
+        <input type="text" id="mandado-entrega" placeholder="Ej: Casa del cliente, Oficina">
+      </div>
+      <div class="form-group">
+        <label>Kilómetros del recorrido</label>
+        <input type="number" id="mandado-km" placeholder="Ej: 4" min="0" oninput="calcQuote()">
+      </div>
+      <div class="form-group">
+        <label>Valor del producto (₡)</label>
+        <input type="number" id="mandado-prod" placeholder="0" min="0" oninput="calcQuote()">
+      </div>
+      <div class="form-group">
+        <label>¿Es urgente?</label>
+        <select id="mandado-urgente" onchange="calcQuote()">
+          <option value="no">No</option>
+          <option value="si">Sí (+₡1,000 a ₡2,000)</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- TRAMITE -->
+    <div class="card" id="form-tramite" style="display:none">
+      <div class="card-title">📋 Complejidad del trámite</div>
+      <div class="chips" id="tramiteChips">
+        <div class="chip selected" onclick="selectTramite(this,'simple')">Simple (pago, retiro)</div>
+        <div class="chip" onclick="selectTramite(this,'medio')">Medio (filas, espera)</div>
+        <div class="chip" onclick="selectTramite(this,'complejo')">Complejo (varias vueltas)</div>
+      </div>
+      <div class="form-group" style="margin-top:12px">
+        <label>Kilómetros del recorrido</label>
+        <input type="number" id="tramite-km" placeholder="Ej: 6" min="0">
+      </div>
+    </div>
+
+    <!-- PAGO SERVICIO -->
+    <div class="card" id="form-pago" style="display:none">
+      <div class="card-title">📄 Pagos de servicios</div>
+      <div class="form-group">
+        <label>Cantidad de recibos</label>
+        <input type="number" id="recibos" placeholder="1" min="1" oninput="calcQuote()">
+      </div>
+      <div class="form-group">
+        <label>Kilómetros del recorrido</label>
+        <input type="number" id="pago-km" placeholder="Ej: 3" min="0">
+      </div>
+    </div>
+
+    <!-- ENTREGA -->
+    <div class="card" id="form-entrega" style="display:none">
+      <div class="card-title">📦 Recogida / Entrega</div>
+      <div class="chips" id="entregaChips">
+        <div class="chip selected" onclick="selectEntrega(this,'zona')">Misma zona</div>
+        <div class="chip" onclick="selectEntrega(this,'media')">Distancia media</div>
+      </div>
+      <div class="form-group" style="margin-top:12px">
+        <label>¿Express (urgente)?</label>
+        <select id="entrega-express" onchange="calcQuote()">
+          <option value="no">No</option>
+          <option value="si">Sí (+₡1,500)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Kilómetros del recorrido</label>
+        <input type="number" id="entrega-km" placeholder="Ej: 8" min="0">
+      </div>
+    </div>
+
+    <!-- DEPOSITO -->
+    <div class="card" id="form-deposito" style="display:none">
+      <div class="card-title">🏦 Depósito / Retiro</div>
+      <div class="form-group">
+        <label>¿Monto alto o de riesgo?</label>
+        <select id="deposito-riesgo" onchange="calcQuote()">
+          <option value="no">No</option>
+          <option value="si">Sí (+₡1,000 a ₡2,000)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Kilómetros del recorrido</label>
+        <input type="number" id="deposito-km" placeholder="Ej: 5" min="0">
+      </div>
+    </div>
+
+    <!-- AEROPUERTO SALIDA -->
+    <div class="card" id="form-aero_salida" style="display:none">
+      <div class="card-title">✈️ Aeropuerto — Salida</div>
+      <p style="font-size:13px;color:var(--gray);margin-bottom:12px">Solo dejar al cliente. Sin espera.</p>
+      <div class="form-group">
+        <label>Zona de salida</label>
+        <select id="aero-salida-zona" onchange="calcQuote()">
+          <option value="alajuela">Alajuela / Heredia — ₡10,000</option>
+          <option value="sanjose">San José centro — ₡12,000</option>
+          <option value="curri">Curridabat / Desampa — ₡14,000</option>
+          <option value="cartago">Cartago / San Carlos — ₡18,000</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>📍 Dirección de recogida</label>
+        <input type="text" id="aero-salida-origen" placeholder="Ej: Casa del cliente, Curridabat" oninput="calcQuote()">
+      </div>
+    </div>
+
+    <!-- AEROPUERTO LLEGADA -->
+    <div class="card" id="form-aero_llegada" style="display:none">
+      <div class="card-title">🛬 Aeropuerto — Llegada</div>
+      <p style="font-size:13px;color:var(--gray);margin-bottom:12px">Recoger al cliente. Incluye espera en aeropuerto.</p>
+      <div class="form-group">
+        <label>Zona de destino</label>
+        <select id="aero-llegada-zona" onchange="calcQuote()">
+          <option value="alajuela">Alajuela / Heredia — ₡13,000</option>
+          <option value="sanjose">San José centro — ₡15,000</option>
+          <option value="curri">Curridabat / Desampa — ₡17,000</option>
+          <option value="cartago">Cartago / San Carlos — ₡22,000</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>🏁 Dirección de entrega</label>
+        <input type="text" id="aero-llegada-destino" placeholder="Ej: Casa del cliente, San José" oninput="calcQuote()">
+      </div>
+      <div class="form-group">
+        <label>Minutos de espera extra (opcional)</label>
+        <input type="number" id="aero-espera-extra" placeholder="0" min="0" oninput="calcQuote()">
+      </div>
+      <div style="font-size:11px;color:var(--gray)">La tarifa ya incluye 30 min de espera estándar. Agregá minutos si esperás más.</div>
+    </div>
+
+    <!-- ESPECIAL -->
+    <div class="card" id="form-especial" style="display:none">
+      <div class="card-title">✈️ Viaje / Traslado especial</div>
+
+      <div class="form-group">
+        <label>¿Quién paga los gastos?</label>
+        <div class="chips" id="gastoChips">
+          <div class="chip selected" onclick="selectGasto(this,'cliente')">💁 Cliente paga gas y viáticos</div>
+          <div class="chip" onclick="selectGasto(this,'yo')">🙋 Yo asumo todo</div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="form-group">
+          <label>Km de ida</label>
+          <input type="number" id="esp-km" placeholder="Ej: 180" min="0" oninput="calcQuote()">
+        </div>
+        <div class="form-group">
+          <label>Horas estimadas</label>
+          <input type="number" id="esp-horas" placeholder="Ej: 4" min="0" step="0.5" oninput="calcQuote()">
+        </div>
+      </div>
+
+      <!-- Solo visible si yo asumo todo -->
+      <div id="esp-gastos-propios">
+        <div id="gas-hint-text" style="font-size:12px;color:var(--gold);font-weight:600;margin-bottom:8px">⛽ Usando ₡628/litro · 10 km/litro (config arriba)</div>
+        <div class="row">
+          <div class="form-group">
+            <label>Peajes ida y vuelta (₡)</label>
+            <input type="number" id="esp-peajes" placeholder="Ej: 2000" min="0" oninput="calcQuote()">
+          </div>
+          <div class="form-group">
+            <label>Viáticos / comida (₡)</label>
+            <input type="number" id="esp-viaticos" placeholder="Ej: 5000" min="0" oninput="calcQuote()">
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Mi cobro por servicio (₡)</label>
+        <input type="number" id="esp-cobro" placeholder="Ej: 20000" min="0" oninput="calcQuote()">
+      </div>
+    </div>
+
+    <!-- EXTRAS -->
+    <div class="card">
+      <div class="card-title">⚡ Extras</div>
+      <div class="extras-grid">
+        <div class="extra-item" id="ext-lluvia" onclick="toggleExtra('lluvia')">
+          <div>
+            <div class="extra-label">🌧️ Lluvia / Presas</div>
+            <div class="extra-price">+₡1,000</div>
+          </div>
+        </div>
+        <div class="extra-item" id="ext-nocturno" onclick="toggleExtra('nocturno')">
+          <div>
+            <div class="extra-label">🌙 Horario nocturno</div>
+            <div class="extra-price">+₡2,000 (después 9pm)</div>
+          </div>
+        </div>
+        <div class="extra-item" id="ext-feriado" onclick="toggleExtra('feriado')">
+          <div>
+            <div class="extra-label">📅 Domingo / Feriado</div>
+            <div class="extra-price">+₡2,000</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="quoteResult" class="quote-result">
+      <div style="text-align:center;font-size:14px;opacity:0.8">COTIZACIÓN ESTIMADA</div>
+      <div class="quote-amount" id="quoteTotal">₡0</div>
+      <div class="quote-breakdown" id="quoteBreakdown"></div>
+
+      <!-- CLUB MARIANO -->
+      <div id="clubMarianoSection" style="background:rgba(255,255,255,0.12);border-radius:12px;padding:14px;margin-top:14px">
+        <div style="font-size:13px;font-weight:700;margin-bottom:10px;color:var(--gold-light)">⭐ Club Mariano — Descuentos</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px" id="discountChips">
+          <div class="disc-chip" onclick="selectDiscount(this,0)">Sin descuento</div>
+          <div class="disc-chip" onclick="selectDiscount(this,12)">🆕 Primer viaje 12%</div>
+          <div class="disc-chip" onclick="selectDiscount(this,10)">🔁 Recurrente 10%</div>
+          <div class="disc-chip" onclick="selectDiscount(this,15)">⭐ VIP 15%</div>
+          <div class="disc-chip" onclick="selectDiscount(this,20)">🎂 Cumpleaños 20%</div>
+          <div class="disc-chip" onclick="selectDiscount(this,8)">📦 Combo 8%</div>
+          <div class="disc-chip" onclick="selectDiscount(this,10)">🤝 Referido 10%</div>
+        </div>
+        <div id="discountResult" style="display:none;margin-top:12px;text-align:center">
+          <div style="font-size:12px;opacity:0.7;text-decoration:line-through" id="precioOriginal"></div>
+          <div style="font-size:28px;font-weight:900;color:var(--gold-light)" id="precioDescuento"></div>
+          <div style="font-size:12px;opacity:0.8" id="discountLabel"></div>
+        </div>
+      </div>
+
+      <button class="btn btn-gold" style="margin-top:14px" onclick="openSaveModal()">💾 Guardar servicio</button>
+      <button class="btn btn-whatsapp" onclick="shareWhatsApp()">📱 Compartir por WhatsApp</button>
+    </div>
+  </div>
+
+  <!-- ===== AGENDA ===== -->
+  <div class="section" id="sec-agenda">
+    <div class="section-header">
+      <div class="section-title">Agenda</div>
+    </div>
+    <div id="agendaList">
+      <div class="empty"><div class="empty-icon">📅</div><div class="empty-text">No hay servicios agendados</div></div>
+    </div>
+  </div>
+
+  <!-- ===== CLIENTES ===== -->
+  <div class="section" id="sec-clientes">
+    <div class="section-header">
+      <div class="section-title">Clientes</div>
+      <button class="btn btn-gold btn-sm" onclick="openClientModal()">+ Nuevo</button>
+    </div>
+    <div style="position:relative;margin-bottom:12px">
+      <input type="text" id="clientSearch" placeholder="🔍 Buscar cliente..." oninput="renderClientes()" style="padding-left:14px">
+    </div>
+    <div id="clientesList">
+      <div class="empty"><div class="empty-icon">👥</div><div class="empty-text">Aún no tienes clientes registrados</div></div>
+    </div>
+  </div>
+
+  <!-- ===== HISTORIAL ===== -->
+  <div class="section" id="sec-historial">
+    <div class="section-header">
+      <div class="section-title">Historial</div>
+      <button class="btn btn-outline btn-sm" onclick="clearHistorial()">Limpiar</button>
+    </div>
+    <div id="historialList">
+      <div class="empty"><div class="empty-icon">📋</div><div class="empty-text">No hay servicios completados</div></div>
+    </div>
+  </div>
+
+  <!-- ===== GANANCIAS ===== -->
+  <div class="section" id="sec-ganancias">
+    <div class="section-header">
+      <div class="section-title">Ganancias</div>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-val" id="stat-hoy">₡0</div>
+        <div class="stat-label">Hoy</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val" id="stat-semana">₡0</div>
+        <div class="stat-label">Esta semana</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val" id="stat-mes">₡0</div>
+        <div class="stat-label">Este mes</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val" id="stat-servicios">0</div>
+        <div class="stat-label">Servicios totales</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">📊 Por tipo de servicio</div>
+      <div id="gananciasPorTipo"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🕐 Últimos servicios</div>
+      <div id="gananciasRecientes"></div>
+    </div>
+
+    <!-- RESPALDO -->
+    <div class="card" style="border-left:4px solid var(--gold)">
+      <div class="card-title">💾 Respaldo de datos</div>
+      <p style="font-size:13px;color:var(--gray);margin-bottom:14px">Exportá tus datos para no perderlos. Guardá el archivo en Google Drive o WhatsApp.</p>
+      <button class="btn btn-primary" onclick="exportarDatos()" style="margin-bottom:10px">
+        📤 Exportar todos mis datos
+      </button>
+      <button class="btn btn-outline" onclick="document.getElementById('importFile').click()" style="width:100%">
+        📥 Importar respaldo
+      </button>
+      <input type="file" id="importFile" accept=".json" style="display:none" onchange="importarDatos(event)">
+      <p style="font-size:11px;color:var(--gray);margin-top:10px;text-align:center">⚠️ Importar reemplaza todos los datos actuales</p>
+    </div>
+  </div>
+
+  <!-- ===== CIERRE DE DÍA ===== -->
+  <div class="section" id="sec-cierre">
+    <div class="section-header">
+      <div class="section-title">📊 Cierre del día</div>
+    </div>
+
+    <!-- KM INICIAL MAÑANA -->
+    <div class="card" style="border-left:4px solid var(--gold)">
+      <div class="card-title">☀️ Inicio de jornada</div>
+      <div id="km-ini-guardado-display" style="display:none;background:#f0fdf4;border-radius:10px;padding:10px 12px;margin-bottom:12px;font-size:14px"></div>
+      <div class="form-group">
+        <label>Km inicial del odómetro</label>
+        <input type="number" id="km-ini-manana" placeholder="Ej: 45230" min="0">
+      </div>
+      <button class="btn btn-gold" onclick="guardarKmInicial()">💾 Guardar km inicial</button>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🌙 Cierre de jornada</div>
+      <div class="row">
+        <div class="form-group">
+          <label>Km inicial</label>
+          <input type="number" id="cierre-km-ini" placeholder="Ej: 45230" min="0">
+        </div>
+        <div class="form-group">
+          <label>Km final</label>
+          <input type="number" id="cierre-km-fin" placeholder="Ej: 45530" min="0">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>⛽ Gas echado hoy (₡)</label>
+        <input type="number" id="cierre-gas" placeholder="0" min="0">
+      </div>
+      <button class="btn btn-primary" onclick="calcularCierre()">📊 Calcular cierre</button>
+    </div>
+
+    <div id="cierreResult" style="display:none">
+      <div class="card" style="background:linear-gradient(135deg,var(--navy),var(--navy-light));color:white">
+        <div style="font-family:'Playfair Display',serif;font-size:18px;font-weight:900;margin-bottom:14px;color:var(--gold-light)">Resumen del día</div>
+        <div id="cierreDetalle"></div>
+        <button class="btn btn-gold" style="margin-top:14px" onclick="guardarCierre()">💾 Guardar cierre</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">📅 Historial de cierres</div>
+      <div id="cierreHistorial">
+        <div style="color:var(--gray);font-size:14px">No hay cierres guardados</div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /content -->
+
+<!-- MODAL GUARDAR SERVICIO -->
+<div class="modal-overlay" id="saveModal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="card-title">📅 Agendar servicio</div>
+    <div class="form-group">
+      <label>Cliente</label>
+      <select id="save-cliente" onchange="onSaveClienteChange()">
+        <option value="">-- Sin cliente --</option>
+      </select>
+    </div>
+    <div id="save-nivel"></div>
+    <div class="form-group">
+      <label>Descripción</label>
+      <input type="text" id="save-desc" placeholder="Ej: Ride al aeropuerto">
+    </div>
+    <div class="form-group">
+      <label>Monto acordado (₡)</label>
+      <input type="number" id="save-monto" placeholder="0">
+    </div>
+    <div class="row">
+      <div class="form-group">
+        <label>Fecha</label>
+        <input type="date" id="save-fecha" style="background:white">
+      </div>
+      <div class="form-group">
+        <label>Hora</label>
+        <input type="time" id="save-hora" style="background:white">
+      </div>
+    </div>
+    <div style="font-size:11px;color:var(--gray);margin-bottom:12px">Si no ponés hora, queda agendado sin horario fijo</div>
+    <div style="display:flex;gap:10px;margin-top:4px">
+      <button class="btn btn-primary" onclick="saveService()">📅 Agendar</button>
+      <button class="btn btn-outline btn-sm" onclick="closeModal('saveModal')" style="flex:1">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL AGENDA -->
+<div class="modal-overlay" id="agendaModal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="card-title">📅 Nuevo servicio agendado</div>
+    <div class="form-group">
+      <label>Cliente</label>
+      <select id="ag-cliente">
+        <option value="">-- Sin cliente --</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Tipo de servicio</label>
+      <select id="ag-tipo" onchange="estimarDuracion()">
+        <option value="ride">🚗 Ride</option>
+        <option value="mandado">🛍️ Mandado</option>
+        <option value="tramite_simple">📋 Trámite simple</option>
+        <option value="tramite_medio">📋 Trámite medio</option>
+        <option value="tramite_complejo">📋 Trámite complejo</option>
+        <option value="pago">📄 Pago de servicio</option>
+        <option value="entrega">📦 Entrega</option>
+        <option value="deposito">🏦 Depósito/Retiro</option>
+        <option value="especial">✈️ Traslado especial</option>
+      </select>
+    </div>
+    <div class="form-group" id="ag-km-group">
+      <label>Kilómetros estimados (para ride)</label>
+      <input type="number" id="ag-km" placeholder="Ej: 5" min="0" oninput="estimarDuracion()">
+    </div>
+    <div class="form-group">
+      <label>Descripción / Nota</label>
+      <input type="text" id="ag-servicio" placeholder="Ej: Ride al hospital, Curridabat">
+    </div>
+    <div class="row">
+      <div class="form-group">
+        <label>Fecha</label>
+        <input type="date" id="ag-fecha">
+      </div>
+      <div class="form-group">
+        <label>Hora inicio</label>
+        <input type="time" id="ag-hora" onchange="estimarDuracion()">
+      </div>
+    </div>
+    <div id="ag-duracion-preview" style="background:#f0fdf4;border-radius:10px;padding:10px 12px;margin-bottom:12px;font-size:13px;display:none">
+      <span id="ag-duracion-text"></span>
+    </div>
+    <div class="form-group">
+      <label>Duración estimada (minutos)</label>
+      <input type="number" id="ag-duracion" placeholder="Ej: 30" min="5" oninput="updateDuracionPreview()">
+    </div>
+    <div class="form-group">
+      <label>Monto estimado (₡)</label>
+      <input type="number" id="ag-monto" placeholder="0">
+    </div>
+    <div style="display:flex;gap:10px;margin-top:4px">
+      <button class="btn btn-primary" onclick="saveAgenda()">Agendar</button>
+      <button class="btn btn-outline btn-sm" onclick="closeModal('agendaModal')" style="flex:1">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL EDITAR AGENDA -->
+<div class="modal-overlay" id="editAgendaModal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="card-title">✏️ Editar servicio</div>
+    <input type="hidden" id="edit-ag-id">
+    <div class="form-group">
+      <label>Cliente</label>
+      <select id="edit-ag-cliente"></select>
+    </div>
+    <div class="form-group">
+      <label>Descripción</label>
+      <input type="text" id="edit-ag-servicio" placeholder="Descripción del servicio">
+    </div>
+    <div class="row">
+      <div class="form-group">
+        <label>Fecha</label>
+        <input type="date" id="edit-ag-fecha">
+      </div>
+      <div class="form-group">
+        <label>Hora</label>
+        <input type="time" id="edit-ag-hora">
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Duración (minutos)</label>
+      <input type="number" id="edit-ag-duracion" placeholder="30" min="5">
+    </div>
+    <div class="form-group">
+      <label>Monto (₡)</label>
+      <input type="number" id="edit-ag-monto" placeholder="0">
+    </div>
+    <div class="form-group">
+      <label>Km del recorrido</label>
+      <input type="number" id="edit-ag-km" placeholder="0" min="0">
+    </div>
+    <div style="display:flex;gap:10px;margin-top:4px">
+      <button class="btn btn-primary" onclick="guardarEditAgenda()">💾 Guardar</button>
+      <button class="btn btn-outline btn-sm" onclick="closeModal('editAgendaModal')" style="flex:1">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL EDITAR HISTORIAL -->
+<div class="modal-overlay" id="editHistorialModal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="card-title">✏️ Editar registro</div>
+    <input type="hidden" id="edit-hist-id">
+    <div class="form-group">
+      <label>Cliente</label>
+      <select id="edit-hist-cliente"></select>
+    </div>
+    <div class="form-group">
+      <label>Descripción</label>
+      <input type="text" id="edit-hist-desc" placeholder="Descripción del servicio">
+    </div>
+    <div class="form-group">
+      <label>Monto cobrado (₡)</label>
+      <input type="number" id="edit-hist-monto" placeholder="0">
+    </div>
+    <div class="form-group">
+      <label>Km del recorrido</label>
+      <input type="number" id="edit-hist-km" placeholder="0" min="0">
+    </div>
+    <div class="form-group">
+      <label>Fecha</label>
+      <input type="date" id="edit-hist-fecha">
+    </div>
+    <div style="display:flex;gap:10px;margin-top:4px">
+      <button class="btn btn-primary" onclick="guardarEditHistorial()">💾 Guardar</button>
+      <button class="btn btn-outline btn-sm" onclick="closeModal('editHistorialModal')" style="flex:1">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL CLIENTE -->
+<div class="modal-overlay" id="clientModal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="card-title">👤 Nuevo cliente</div>
+    <div class="form-group">
+      <label>Nombre completo</label>
+      <input type="text" id="cl-nombre" placeholder="Nombre del cliente">
+    </div>
+    <div class="form-group">
+      <label>Teléfono / WhatsApp</label>
+      <input type="tel" id="cl-tel" placeholder="Ej: 8888-8888">
+    </div>
+    <div class="form-group">
+      <label>Dirección o zona</label>
+      <input type="text" id="cl-dir" placeholder="Ej: Curridabat, San José">
+    </div>
+    <div class="form-group">
+      <label>Nota</label>
+      <input type="text" id="cl-nota" placeholder="Algo importante sobre este cliente">
+    </div>
+    <div style="display:flex;gap:10px;margin-top:4px">
+      <button class="btn btn-primary" onclick="saveCliente()">Guardar cliente</button>
+      <button class="btn btn-outline btn-sm" onclick="closeModal('clientModal')" style="flex:1">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ===== STATE =====
+let state = {
+  clientes: JSON.parse(localStorage.getItem('mar_clientes') || '[]'),
+  agenda: JSON.parse(localStorage.getItem('mar_agenda') || '[]'),
+  historial: JSON.parse(localStorage.getItem('mar_historial') || '[]'),
+  cierres: JSON.parse(localStorage.getItem('mar_cierres') || '[]'),
+  kmInicial: JSON.parse(localStorage.getItem('mar_km_inicial') || 'null'),
+};
+
+let currentService = 'ride';
+let currentTramite = 'simple';
+let currentEntrega = 'zona';
+let currentGasto = 'cliente';
+let currentDiscount = 0;
+let currentDiscountLabel = '';
+let extras = { lluvia: false, nocturno: false, feriado: false };
+let lastQuote = 0;
+let lastQuoteBase = 0;
+
+// ===== INIT =====
+function init() {
+  const now = new Date();
+  document.getElementById('headerDate').innerHTML =
+    `<div>${now.toLocaleDateString('es-CR', {weekday:'short',day:'numeric',month:'short'})}</div>`;
+  document.getElementById('ag-fecha').value = now.toISOString().split('T')[0];
+
+  // Cargar config gasolina
+  document.getElementById('config-gas-precio').value = localStorage.getItem('mar_gas_precio') || '628';
+  document.getElementById('config-rendimiento').value = localStorage.getItem('mar_rendimiento') || '10';
+  document.getElementById('config-desgaste').value = localStorage.getItem('mar_desgaste') || '40';
+  document.getElementById('esp-gastos-propios').style.display = 'none';
+
+  calcQuote();
+  renderAll();
+  checkNotifBanner();
+  mostrarKmInicialGuardado();
+}
+
+function save() {
+  localStorage.setItem('mar_clientes', JSON.stringify(state.clientes));
+  localStorage.setItem('mar_agenda', JSON.stringify(state.agenda));
+  localStorage.setItem('mar_historial', JSON.stringify(state.historial));
+  localStorage.setItem('mar_cierres', JSON.stringify(state.cierres));
+  localStorage.setItem('mar_km_inicial', JSON.stringify(state.kmInicial));
+}
+
+function renderAll() {
+  renderAgenda();
+  renderClientes();
+  renderHistorial();
+  renderGanancias();
+  renderCierreHistorial();
+  updateClientSelects();
+}
+
+// ===== NAV =====
+function showSection(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('sec-' + id).classList.add('active');
+  document.getElementById('nav-' + id).classList.add('active');
+  if (id === 'ganancias') renderGanancias();
+  if (id === 'cierre') mostrarKmInicialGuardado();
+}
+
+// ===== COTIZADOR =====
+function selectService(el, type) {
+  document.querySelectorAll('#serviceChips .chip').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  currentService = type;
+  ['ride','mandado','tramite','pago','entrega','deposito','aero_salida','aero_llegada','especial'].forEach(t => {
+    document.getElementById('form-'+t).style.display = t === type ? 'block' : 'none';
+  });
+  calcQuote();
+}
+
+function selectTramite(el, type) {
+  document.querySelectorAll('#tramiteChips .chip').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  currentTramite = type;
+  calcQuote();
+}
+
+function selectEntrega(el, type) {
+  document.querySelectorAll('#entregaChips .chip').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  currentEntrega = type;
+  calcQuote();
+}
+
+function selectDiscount(el, pct) {
+  document.querySelectorAll('#discountChips .disc-chip').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  currentDiscount = pct;
+  currentDiscountLabel = el.textContent;
+  applyDiscount();
+}
+
+function applyDiscount() {
+  const result = document.getElementById('discountResult');
+  if (currentDiscount === 0) {
+    result.style.display = 'none';
+    lastQuote = lastQuoteBase;
+    document.getElementById('save-monto').value = lastQuote;
+    return;
+  }
+  const descuento = Math.round(lastQuoteBase * currentDiscount / 100);
+  const final = lastQuoteBase - descuento;
+  lastQuote = final;
+  document.getElementById('precioOriginal').textContent = '₡' + fmt(lastQuoteBase) + ' (precio normal)';
+  document.getElementById('precioDescuento').textContent = '₡' + fmt(final);
+  document.getElementById('discountLabel').textContent = currentDiscountLabel + ' — Ahorrás ₡' + fmt(descuento);
+  result.style.display = 'block';
+  document.getElementById('save-monto').value = final;
+}
+
+function selectGasto(el, type) {
+  document.querySelectorAll('#gastoChips .chip').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  currentGasto = type;
+  const show = type === 'yo';
+  document.getElementById('esp-gastos-propios').style.display = show ? 'block' : 'none';
+  if (show) {
+    const p = document.getElementById('config-gas-precio').value || '628';
+    const r = document.getElementById('config-rendimiento').value || '10';
+    document.getElementById('gas-hint-text').textContent = `⛽ Usando ₡${p}/litro · ${r} km/litro (config arriba)`;
+  }
+  calcQuote();
+}
+
+function saveGasConfig() {
+  const p = document.getElementById('config-gas-precio').value;
+  const r = document.getElementById('config-rendimiento').value;
+  const d = document.getElementById('config-desgaste').value;
+  if (p) localStorage.setItem('mar_gas_precio', p);
+  if (r) localStorage.setItem('mar_rendimiento', r);
+  if (d !== '') localStorage.setItem('mar_desgaste', d);
+  calcQuote();
+}
+
+function toggleExtra(key) {
+  extras[key] = !extras[key];
+  document.getElementById('ext-'+key).classList.toggle('checked', extras[key]);
+  calcQuote();
+}
+
+function calcQuote() {
+  try {
+  let total = 0;
+  let lines = [];
+
+  if (currentService === 'ride') {
+    const km = parseFloat(document.getElementById('km').value) || 0;
+    const esp = parseFloat(document.getElementById('espera').value) || 0;
+    const gasPrecio = parseFloat(document.getElementById('config-gas-precio').value) || 628;
+    const rendimiento = parseFloat(document.getElementById('config-rendimiento').value) || 10;
+    const desgaste = parseFloat(document.getElementById('config-desgaste').value) || 40;
+    const base = 800;
+    const kmCost = km * 500;
+    const espCost = esp * 100;
+    total = Math.max(2000, base + kmCost + espCost);
+    lines.push({l:'Tarifa base (arranque)', v:'₡800'});
+    if (km > 0) lines.push({l:`${km} km × ₡500`, v:'₡'+fmt(kmCost)});
+    if (esp > 0) lines.push({l:`${esp} min espera × ₡100`, v:'₡'+fmt(espCost)});
+    if (total === 2000 && (base+kmCost+espCost) < 2000) lines.push({l:'Viaje mínimo', v:'₡2,000'});
+    // Show real cost breakdown
+    if (km > 0) {
+      const costoGas = Math.round((km / rendimiento) * gasPrecio);
+      const costoDesgaste = Math.round(km * desgaste);
+      const costoTotal = costoGas + costoDesgaste;
+      const ganancia = total - costoTotal;
+      lines.push({l:'— — —', v:''});
+      lines.push({l:`⛽ Gas (${km}km)`, v:'-₡'+fmt(costoGas)});
+      lines.push({l:`🔧 Desgaste`, v:'-₡'+fmt(costoDesgaste)});
+      lines.push({l:`💰 Ganancia neta`, v:'₡'+fmt(ganancia)});
+    }
+
+  } else if (currentService === 'mandado') {
+    const prod = parseFloat(document.getElementById('mandado-prod').value) || 0;
+    const urgente = document.getElementById('mandado-urgente').value === 'si';
+    total = 3000 + prod + (urgente ? 1500 : 0);
+    lines.push({l:'Tarifa mandado', v:'₡3,000'});
+    if (prod > 0) lines.push({l:'Costo producto', v:'₡'+fmt(prod)});
+    if (urgente) lines.push({l:'Urgente', v:'+₡1,500'});
+
+  } else if (currentService === 'tramite') {
+    const ranges = {simple:[4000,6000], medio:[7000,10000], complejo:[12000,20000]};
+    const [min,max] = ranges[currentTramite];
+    total = Math.round((min+max)/2);
+    lines.push({l:'Trámite '+currentTramite, v:`₡${fmt(min)}–₡${fmt(max)}`});
+
+  } else if (currentService === 'pago') {
+    const rec = parseInt(document.getElementById('recibos').value) || 1;
+    if (rec >= 3) {
+      total = Math.round((5000+7000)/2);
+      lines.push({l:`Combo ${rec}+ recibos`, v:'₡5,000–₡7,000'});
+    } else {
+      total = 2500 * rec;
+      lines.push({l:`${rec} recibo(s) × ₡2,500`, v:'₡'+fmt(total)});
+    }
+
+  } else if (currentService === 'entrega') {
+    const express = document.getElementById('entrega-express').value === 'si';
+    const base = currentEntrega === 'zona' ? 4000 : 6500;
+    total = base + (express ? 1500 : 0);
+    lines.push({l: currentEntrega === 'zona' ? 'Misma zona' : 'Distancia media', v:'₡'+fmt(base)});
+    if (express) lines.push({l:'Express', v:'+₡1,500'});
+
+  } else if (currentService === 'deposito') {
+    const riesgo = document.getElementById('deposito-riesgo').value === 'si';
+    total = 4000 + (riesgo ? 1500 : 0);
+    lines.push({l:'Depósito/Retiro base', v:'₡3,000–₡5,000'});
+    if (riesgo) lines.push({l:'Monto riesgo', v:'+₡1,500'});
+
+  } else if (currentService === 'aero_salida') {
+    const zona = document.getElementById('aero-salida-zona').value;
+    const tarifas = {alajuela:10000, sanjose:12000, curri:14000, cartago:18000};
+    const zonaLabels = {alajuela:'Alajuela / Heredia', sanjose:'San José centro', curri:'Curridabat / Desampa', cartago:'Cartago / San Carlos'};
+    total = tarifas[zona];
+    lines.push({l:'✈️ Aeropuerto Salida', v:''});
+    lines.push({l:`📍 Zona: ${zonaLabels[zona]}`, v:'₡'+fmt(total)});
+    lines.push({l:'🛣️ Peaje autopista', v:'Incluido'});
+    const origen = document.getElementById('aero-salida-origen').value.trim();
+    if (origen) lines.push({l:`📍 Recogida: ${origen}`, v:''});
+
+  } else if (currentService === 'aero_llegada') {
+    const zona = document.getElementById('aero-llegada-zona').value;
+    const tarifas = {alajuela:13000, sanjose:15000, curri:17000, cartago:22000};
+    const zonaLabels = {alajuela:'Alajuela / Heredia', sanjose:'San José centro', curri:'Curridabat / Desampa', cartago:'Cartago / San Carlos'};
+    const esperaExtra = parseFloat(document.getElementById('aero-espera-extra').value) || 0;
+    const costoEsperaExtra = esperaExtra * 100;
+    total = tarifas[zona] + costoEsperaExtra;
+    lines.push({l:'🛬 Aeropuerto Llegada', v:''});
+    lines.push({l:`📍 Zona: ${zonaLabels[zona]}`, v:'₡'+fmt(tarifas[zona])});
+    lines.push({l:'⏱️ Espera estándar 30 min', v:'Incluida'});
+    if (esperaExtra > 0) lines.push({l:`⏱️ Espera extra ${esperaExtra} min`, v:'+₡'+fmt(costoEsperaExtra)});
+    lines.push({l:'🛣️ Peaje autopista', v:'Incluido'});
+    const destino = document.getElementById('aero-llegada-destino').value.trim();
+    if (destino) lines.push({l:`🏁 Entrega: ${destino}`, v:''});
+
+  } else if (currentService === 'especial') {
+    const km = parseFloat(document.getElementById('esp-km').value) || 0;
+    const horas = parseFloat(document.getElementById('esp-horas').value) || 0;
+    const cobro = parseFloat(document.getElementById('esp-cobro').value) || 0;
+    const gasMode = currentGasto;
+    const gasPrecio = parseFloat(document.getElementById('config-gas-precio').value) || 628;
+    const rendimiento = parseFloat(document.getElementById('config-rendimiento').value) || 10;
+
+    if (gasMode === 'yo') {
+      const peajes = parseFloat(document.getElementById('esp-peajes').value) || 0;
+      const viaticos = parseFloat(document.getElementById('esp-viaticos').value) || 0;
+      const litros = (km * 2) / rendimiento;
+      const gasCost = litros * gasPrecio;
+      lines.push({l:`⛽ Gasolina (${fmt(km*2)} km ida+vuelta)`, v:'₡'+fmt(gasCost)});
+      if (peajes > 0) lines.push({l:'🛣️ Peajes', v:'₡'+fmt(peajes)});
+      if (viaticos > 0) lines.push({l:'🍽️ Viáticos / comida', v:'₡'+fmt(viaticos)});
+      if (cobro > 0) lines.push({l:'💼 Mi servicio', v:'₡'+fmt(cobro)});
+      if (horas > 0) lines.push({l:`⏱️ ${horas}h de trabajo`, v:''});
+      total = gasCost + peajes + viaticos + cobro;
+    } else {
+      if (horas > 0) lines.push({l:`⏱️ ${horas}h de trabajo`, v:''});
+      if (km > 0) lines.push({l:`📍 ${km} km de ida`, v:'(gas por cuenta del cliente)'});
+      lines.push({l:'💼 Mi servicio', v:'₡'+fmt(cobro)});
+      lines.push({l:'⛽ Gasolina + viáticos', v:'Paga el cliente aparte'});
+      total = cobro;
+    }
+  }
+
+  // Extras
+  let extrasTotal = 0;
+  if (extras.lluvia) { extrasTotal += 1000; lines.push({l:'🌧️ Lluvia/Presas', v:'+₡1,000'}); }
+  if (extras.nocturno) { extrasTotal += 2000; lines.push({l:'🌙 Nocturno', v:'+₡2,000'}); }
+  if (extras.feriado) { extrasTotal += 2000; lines.push({l:'📅 Feriado/Domingo', v:'+₡2,000'}); }
+  total += extrasTotal;
+
+  lastQuoteBase = total;
+  lastQuote = total;
+
+  // Show/hide Club Mariano — solo para ride
+  const clubMariano = document.getElementById('clubMarianoSection');
+  const soloRide = currentService === 'ride';
+  if (clubMariano) clubMariano.style.display = soloRide ? 'block' : 'none';
+  if (!soloRide) {
+    currentDiscount = 0;
+    currentDiscountLabel = '';
+    document.querySelectorAll('#discountChips .disc-chip').forEach(c => c.classList.remove('selected'));
+    document.getElementById('discountResult').style.display = 'none';
+  }
+
+  // Render
+  const breakdown = document.getElementById('quoteBreakdown');
+  breakdown.innerHTML = lines.map(l =>
+    `<div class="quote-line"><span>${l.l}</span><span>${l.v}</span></div>`
+  ).join('') + `<div class="quote-line total"><span>TOTAL ESTIMADO</span><span>₡${fmt(total)}</span></div>`;
+
+  document.getElementById('quoteTotal').textContent = '₡' + fmt(total);
+  document.getElementById('quoteResult').classList.add('show');
+  document.getElementById('save-monto').value = total;
+
+  // Re-apply discount if any selected
+  if (currentDiscount > 0) applyDiscount();
+  } catch(e) { console.error('calcQuote error:', e); }
+}
+
+function fmt(n) {
+  return Math.round(n).toLocaleString('es-CR');
+}
+
+// ===== SAVE SERVICE =====
+function openSaveModal() {
+  updateClientSelects();
+  const desc = getServiceDesc();
+  document.getElementById('save-desc').value = desc;
+  document.getElementById('save-monto').value = lastQuote;
+  document.getElementById('save-nivel').innerHTML = '';
+  document.getElementById('save-fecha').value = new Date().toISOString().split('T')[0];
+  document.getElementById('saveModal').classList.add('show');
+}
+
+function onSaveClienteChange() {
+  const clienteId = document.getElementById('save-cliente').value;
+  const nivelDiv = document.getElementById('save-nivel');
+  if (!clienteId) { nivelDiv.innerHTML = ''; return; }
+  const nivel = getNivelCliente(clienteId);
+  const cliente = state.clientes.find(c => c.id == clienteId);
+  nivelDiv.innerHTML = `<div style="background:#f0fdf4;border-radius:10px;padding:10px 12px;font-size:13px;margin-bottom:8px">
+    👤 <strong>${cliente.nombre}</strong> — <span class="badge ${nivel.badge}">${nivel.label}</span>
+    ${nivel.descuento > 0 && !nivel.vencido ? `<br><span style="color:var(--success);font-weight:600;margin-top:4px;display:block">✅ Descuento sugerido: ${nivel.descuento}%</span>` : ''}
+    ${nivel.vencido ? `<br><span style="color:var(--danger);font-size:12px">❌ Descuento vencido — sin actividad por ${nivel.diasSinUsar} días</span>` : ''}
+  </div>`;
+  // Auto-apply discount solo para ride
+  if (nivel.descuento > 0 && !nivel.vencido && lastQuoteBase > 0 && currentService === 'ride') {
+    const descuento = Math.round(lastQuoteBase * nivel.descuento / 100);
+    document.getElementById('save-monto').value = lastQuoteBase - descuento;
+    // Also select the matching chip
+    document.querySelectorAll('#discountChips .disc-chip').forEach(chip => {
+      if (chip.textContent.includes(nivel.descuento + '%')) {
+        chip.classList.add('selected');
+        currentDiscount = nivel.descuento;
+        currentDiscountLabel = chip.textContent;
+      }
+    });
+  }
+}
+
+function getKmFromForm() {
+  const fields = {
+    ride: 'km', mandado: 'mandado-km', tramite: 'tramite-km',
+    pago: 'pago-km', entrega: 'entrega-km', deposito: 'deposito-km',
+    aero_salida: null, aero_llegada: null, especial: 'esp-km'
+  };
+  const field = fields[currentService];
+  if (!field) {
+    // Aeropuerto — usar km por zona
+    if (currentService === 'aero_salida') {
+      const z = document.getElementById('aero-salida-zona')?.value;
+      return {alajuela:18, sanjose:24, curri:30, cartago:55}[z] || 20;
+    }
+    if (currentService === 'aero_llegada') {
+      const z = document.getElementById('aero-llegada-zona')?.value;
+      return {alajuela:18, sanjose:24, curri:30, cartago:55}[z] || 20;
+    }
+    return 0;
+  }
+  return parseFloat(document.getElementById(field)?.value) || 0;
+}
+
+function getServiceDesc() {
+  const names = {
+    ride:'Ride', mandado:'Mandado', tramite:'Trámite',
+    pago:'Pago de servicio', entrega:'Entrega',
+    deposito:'Depósito/Retiro', especial:'Traslado especial',
+    aero_salida:'Aeropuerto — Salida', aero_llegada:'Aeropuerto — Llegada'
+  };
+  return names[currentService] || 'Servicio';
+}
+
+function saveService() {
+  const desc = document.getElementById('save-desc').value || getServiceDesc();
+  const monto = parseFloat(document.getElementById('save-monto').value) || lastQuote;
+  const clienteId = document.getElementById('save-cliente').value;
+  const cliente = clienteId ? state.clientes.find(c => c.id == clienteId) : null;
+  const fecha = document.getElementById('save-fecha').value || new Date().toISOString().split('T')[0];
+  const hora = document.getElementById('save-hora').value || '';
+  const duracion = 30;
+
+  let horaFin = '';
+  if (hora) {
+    const [h, m] = hora.split(':').map(Number);
+    const fin = new Date(2000, 0, 1, h, m + duracion);
+    horaFin = fin.getHours().toString().padStart(2,'0') + ':' + fin.getMinutes().toString().padStart(2,'0');
+  }
+
+  // Check conflicts
+  if (hora) {
+    const conflictos = checkConflict(fecha, hora, duracion, null);
+    if (conflictos.length > 0) {
+      const c = conflictos[0];
+      const ok = confirm(`⚠️ CHOQUE DE HORARIOS\n\nYa tenés "${c.servicio}" a las ${c.hora}.\n\n¿Agendar de todas formas?`);
+      if (!ok) return;
+    }
+  }
+
+  state.agenda.push({
+    id: Date.now(),
+    servicio: desc,
+    tipo: currentService,
+    fecha,
+    hora,
+    horaFin,
+    duracion,
+    monto,
+    km: getKmFromForm(),
+    clienteId: clienteId || null,
+    clienteNombre: cliente ? cliente.nombre : 'Sin cliente',
+    estado: 'pendiente',
+    terminado: false,
+    origen: currentService === 'ride' ? (document.getElementById('origen')?.value || '') : (document.getElementById('mandado-origen')?.value || ''),
+    destino: currentService === 'ride' ? (document.getElementById('destino')?.value || '') : (document.getElementById('mandado-destino')?.value || ''),
+    entrega: currentService === 'mandado' ? (document.getElementById('mandado-entrega')?.value || '') : '',
+  });
+
+  save();
+  renderAll();
+  scheduleAllNotifs();
+  closeModal('saveModal');
+  toast('📅 Agendado correctamente');
+}
+
+// ===== AGENDA =====
+function openAgendaModal() {
+  updateClientSelects();
+  estimarDuracion();
+  document.getElementById('agendaModal').classList.add('show');
+}
+
+function estimarDuracion() {
+  const tipo = document.getElementById('ag-tipo').value;
+  const km = parseFloat(document.getElementById('ag-km').value) || 0;
+  const hora = document.getElementById('ag-hora').value;
+  const kmGroup = document.getElementById('ag-km-group');
+
+  // Show km field only for ride/especial
+  kmGroup.style.display = (tipo === 'ride' || tipo === 'especial') ? 'block' : 'none';
+
+  // Estimate duration
+  let minutos = 30;
+  if (tipo === 'ride') minutos = Math.max(15, 5 + km * 3);
+  else if (tipo === 'mandado') minutos = 45;
+  else if (tipo === 'tramite_simple') minutos = 60;
+  else if (tipo === 'tramite_medio') minutos = 120;
+  else if (tipo === 'tramite_complejo') minutos = 180;
+  else if (tipo === 'pago') minutos = 45;
+  else if (tipo === 'entrega') minutos = 40;
+  else if (tipo === 'deposito') minutos = 30;
+  else if (tipo === 'especial') minutos = Math.max(60, km * 4);
+
+  document.getElementById('ag-duracion').value = minutos;
+  updateDuracionPreview();
+}
+
+function updateDuracionPreview() {
+  const hora = document.getElementById('ag-hora').value;
+  const minutos = parseInt(document.getElementById('ag-duracion').value) || 0;
+  const preview = document.getElementById('ag-duracion-preview');
+  const text = document.getElementById('ag-duracion-text');
+
+  if (hora && minutos) {
+    const [h, m] = hora.split(':').map(Number);
+    const fin = new Date(2000, 0, 1, h, m + minutos);
+    const horaFin = fin.getHours().toString().padStart(2,'0') + ':' + fin.getMinutes().toString().padStart(2,'0');
+    text.innerHTML = `⏱️ <strong>${hora} → ${horaFin}</strong> (${minutos} min estimados) — ventana bloqueada`;
+    preview.style.display = 'block';
+  } else {
+    preview.style.display = 'none';
+  }
+}
+
+function checkConflict(fecha, horaInicio, duracion, excludeId) {
+  const [h, m] = horaInicio.split(':').map(Number);
+  const inicio = h * 60 + m;
+  const fin = inicio + duracion;
+
+  return state.agenda.filter(ag => {
+    if (ag.id === excludeId || ag.fecha !== fecha || !ag.hora) return false;
+    const [ah, am] = ag.hora.split(':').map(Number);
+    const aInicio = ah * 60 + am;
+    const aFin = aInicio + (ag.duracion || 30);
+    return inicio < aFin && fin > aInicio;
+  });
+}
+
+function saveAgenda() {
+  const servicio = document.getElementById('ag-servicio').value;
+  const tipo = document.getElementById('ag-tipo').value;
+  const fecha = document.getElementById('ag-fecha').value;
+  const hora = document.getElementById('ag-hora').value;
+  const duracion = parseInt(document.getElementById('ag-duracion').value) || 30;
+
+  if (!servicio) { toast('⚠️ Agrega una descripción'); return; }
+  if (!fecha || !hora) { toast('⚠️ Agrega fecha y hora'); return; }
+
+  // Check conflicts
+  const conflictos = checkConflict(fecha, hora, duracion, null);
+  if (conflictos.length > 0) {
+    const c = conflictos[0];
+    const ok = confirm(`⚠️ CHOQUE DE HORARIOS\n\nYa tenés "${c.servicio}" a las ${c.hora} (${c.duracion||30} min).\n\n¿Agendar de todas formas?`);
+    if (!ok) return;
+  }
+
+  const id = Date.now();
+  const agendaEntry = {
+    id,
+    servicio,
+    tipo,
+    fecha,
+    hora,
+    horaFin,
+    duracion,
+    monto: parseFloat(document.getElementById('ag-monto').value) || 0,
+    clienteId: clienteId || null,
+    clienteNombre: cliente ? cliente.nombre : 'Sin cliente',
+    estado: 'en_curso',
+    terminado: false,
+  };
+  state.agenda.push(agendaEntry);
+
+  // Also add to historial as pending
+  state.historial.unshift({
+    id: id + 1,
+    agendaId: id,
+    desc: servicio,
+    monto: agendaEntry.monto,
+    tipo: tipo.replace('_simple','').replace('_medio','').replace('_complejo',''),
+    clienteId: clienteId || null,
+    clienteNombre: cliente ? cliente.nombre : 'Sin cliente',
+    estado: 'pendiente',
+    fecha: new Date(`${fecha}T${hora}`).toISOString(),
+  });
+
+  save();
+  renderAgenda();
+  scheduleAllNotifs();
+  closeModal('agendaModal');
+  toast('📅 Agendado y agregado al historial');
+  document.getElementById('ag-servicio').value = '';
+  document.getElementById('ag-monto').value = '';
+  document.getElementById('ag-km').value = '';
+}
+
+function renderAgenda() {
+  const list = document.getElementById('agendaList');
+  const activos = state.agenda.filter(a => a.estado !== 'cancelado' && a.estado !== 'completado');
+  if (activos.length === 0) {
+    list.innerHTML = '<div class="empty"><div class="empty-icon">📅</div><div class="empty-text">No hay servicios agendados<br><small style="color:var(--gray)">Cotizá un servicio para agendarlo</small></div></div>';
+    return;
+  }
+  const sorted = [...activos].sort((a,b) => (a.fecha+a.hora).localeCompare(b.fecha+b.hora));
+  let html = '';
+  let lastDay = '';
+  sorted.forEach(ag => {
+    const day = new Date(ag.fecha+'T12:00:00').toLocaleDateString('es-CR',{weekday:'long',day:'numeric',month:'long'});
+    if (day !== lastDay) { html += `<div class="agenda-day">${day}</div>`; lastDay = day; }
+    const cliente = ag.clienteId ? state.clientes.find(c => c.id == ag.clienteId) : null;
+    const tel = cliente && cliente.tel ? cliente.tel.replace(/\D/g,'') : '';
+    const horaFin = ag.horaFin ? ` → ${ag.horaFin}` : '';
+    const durLabel = ag.duracion ? `${ag.duracion} min` : '';
+    const completado = ag.estado === 'completado';
+    const rutaInfo = (ag.origen || ag.destino) ? `<div style="font-size:11px;color:var(--gray);margin-top:2px">${ag.origen ? '📍 '+ag.origen : ''}${ag.origen && ag.destino ? ' → ' : ''}${ag.destino ? ag.destino : ''}</div>` : '';
+
+    const waBtn = tel ? `<button class="btn-whatsapp-client" onclick="waCliente('${tel}','${ag.servicio}','${ag.hora}')">📱 Recordatorio</button>` : '';
+
+    const actionBtns = !completado ? `
+      <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap">
+        <button class="btn btn-sm" style="background:var(--success);color:white;font-size:12px" onclick="completarServicio(${ag.id})">✅ Completado</button>
+        <button class="btn btn-sm btn-danger" style="font-size:12px" onclick="cancelarServicio(${ag.id})">❌ Cancelar</button>
+        <button class="btn btn-sm" style="background:var(--navy);color:white;font-size:12px" onclick="abrirEditAgenda(${ag.id})">✏️ Editar</button>
+        ${ag.terminado ? '' : `<button class="btn btn-sm" style="background:#6b7280;color:white;font-size:12px" onclick="terminarAntes(${ag.id})">⏱️ Terminé antes</button>`}
+      </div>` : `<div style="margin-top:6px"><span class="badge badge-green">✅ Completado</span></div>`;
+
+    html += `<div class="agenda-item" style="${completado ? 'opacity:0.55' : ''}">
+      <div class="agenda-time" style="font-size:12px;min-width:52px;text-align:center">
+        ${ag.hora || 'Sin hora'}
+        ${horaFin ? `<div style="font-size:10px;color:var(--gray)">${horaFin.replace(' → ','→')}</div>` : ''}
+        <div style="font-size:10px;color:var(--gray)">${durLabel}</div>
+      </div>
+      <div class="agenda-info">
+        <div class="agenda-name">${ag.servicio}</div>
+        <div class="agenda-desc">${ag.clienteNombre} · ₡${fmt(ag.monto)}</div>
+        ${rutaInfo}
+        ${waBtn}
+        ${actionBtns}
+      </div>
+    </div>`;
+  });
+  list.innerHTML = html;
+}
+
+function completarServicio(id) {
+  const ag = state.agenda.find(a => a.id === id);
+  if (!ag) return;
+  ag.estado = 'completado';
+  ag.terminado = true;
+
+  // Add to historial
+  state.historial.unshift({
+    id: Date.now(),
+    desc: ag.servicio,
+    monto: ag.monto,
+    km: ag.km || 0,
+    tipo: ag.tipo || 'ride',
+    clienteId: ag.clienteId || null,
+    clienteNombre: ag.clienteNombre,
+    estado: 'completado',
+    fecha: new Date().toLocaleDateString('en-CA') + 'T' + new Date().toTimeString().slice(0,8),
+  });
+
+  save(); renderAll();
+  toast('✅ Servicio completado y guardado en historial');
+
+  // Offer feedback WhatsApp
+  const cliente = ag.clienteId ? state.clientes.find(c => c.id == ag.clienteId) : null;
+  if (cliente && cliente.tel) {
+    setTimeout(() => {
+      if (confirm(`📱 ¿Enviarle mensaje de agradecimiento a ${cliente.nombre}?`)) {
+        const tel = cliente.tel.replace(/\D/g,'');
+        const msg = `Hola ${cliente.nombre}! 😊 Gracias por confiar en mis servicios hoy.\n\nTu opinión es muy importante para mí. ¿Cómo calificarías el servicio?\n\n1️⃣ Muy malo\n2️⃣ Malo\n3️⃣ Regular\n4️⃣ Bueno\n5️⃣ Excelente\n\nResponde solo con el número 😊\n\n_Si te gustó, podés recomendarme con alguien de confianza_ 🚗✨\n_Mariano — Tu tiempo es valioso_`;
+        window.open(`https://wa.me/506${tel}?text=${encodeURIComponent(msg)}`);
+      }
+    }, 500);
+  }
+}
+
+function cancelarServicio(id) {
+  if (!confirm('¿Cancelar este servicio?\nSe eliminará de la agenda.')) return;
+  state.agenda = state.agenda.filter(a => a.id !== id);
+  save(); renderAgenda();
+  toast('❌ Servicio cancelado');
+}
+
+function deleteAgenda(id) {
+  state.agenda = state.agenda.filter(a => a.id !== id);
+  save(); renderAgenda(); toast('🗑️ Eliminado');
+}
+
+// ===== CLIENTES =====
+function openClientModal() {
+  document.getElementById('clientModal').classList.add('show');
+}
+
+function saveCliente() {
+  const nombre = document.getElementById('cl-nombre').value;
+  if (!nombre) { toast('⚠️ Ingresa el nombre'); return; }
+  state.clientes.push({
+    id: Date.now(),
+    nombre,
+    tel: document.getElementById('cl-tel').value,
+    dir: document.getElementById('cl-dir').value,
+    nota: document.getElementById('cl-nota').value,
+    fecha: new Date().toISOString(),
+  });
+  save();
+  renderClientes();
+  updateClientSelects();
+  closeModal('clientModal');
+  toast('👤 Cliente guardado');
+  ['cl-nombre','cl-tel','cl-dir','cl-nota'].forEach(id => document.getElementById(id).value = '');
+}
+
+// ===== CLUB MARIANO LOGIC =====
+function getNivelCliente(clienteId) {
+  const servicios = state.historial.filter(h => h.clienteId == clienteId && h.estado === 'completado');
+  const total = servicios.length;
+  if (total === 0) return { nivel: 'nuevo', label: '🆕 Nuevo', descuento: 12, badge: 'badge-blue', vencido: false };
+
+  const ultimo = servicios.reduce((a,b) => new Date(a.fecha) > new Date(b.fecha) ? a : b);
+  const diasSinUsar = Math.floor((Date.now() - new Date(ultimo.fecha)) / (1000*60*60*24));
+
+  if (total >= 10) {
+    const vencido = diasSinUsar > 60;
+    if (vencido) return { nivel: 'recurrente', label: '🔁 Recurrente', descuento: 10, badge: 'badge-gold', vencido: false, diasSinUsar };
+    return { nivel: 'vip', label: '⭐ VIP', descuento: 15, badge: 'badge-gold', vencido: false, diasSinUsar };
+  }
+
+  const vencido = diasSinUsar > 30;
+  if (vencido) return { nivel: 'vencido', label: '❌ Vencido', descuento: 0, badge: 'badge-gray', vencido: true, diasSinUsar };
+  return { nivel: 'recurrente', label: '🔁 Recurrente', descuento: 10, badge: 'badge-blue', vencido: false, diasSinUsar };
+}
+
+function renderClientes() {
+  const list = document.getElementById('clientesList');
+  const busqueda = (document.getElementById('clientSearch')?.value || '').toLowerCase().trim();
+
+  if (state.clientes.length === 0) {
+    list.innerHTML = '<div class="empty"><div class="empty-icon">👥</div><div class="empty-text">Aún no tienes clientes registrados</div></div>';
+    return;
+  }
+
+  let filtrados = state.clientes;
+  if (busqueda) {
+    filtrados = state.clientes.filter(c =>
+      c.nombre.toLowerCase().includes(busqueda) ||
+      (c.tel && c.tel.includes(busqueda)) ||
+      (c.dir && c.dir.toLowerCase().includes(busqueda))
+    );
+  }
+
+  if (filtrados.length === 0) {
+    list.innerHTML = '<div class="empty"><div class="empty-icon">🔍</div><div class="empty-text">No encontré ese cliente</div></div>';
+    return;
+  }
+
+  // Check for clients about to expire (25 days no use)
+  const avisos = [];
+  state.clientes.forEach(c => {
+    const nivel = getNivelCliente(c.id);
+    if (!nivel.vencido && nivel.diasSinUsar >= 25 && nivel.nivel !== 'nuevo') {
+      avisos.push(c.nombre);
+    }
+  });
+  if (avisos.length > 0 && busqueda === '') {
+    list.innerHTML = `<div style="background:#fef3c7;border-radius:12px;padding:12px 14px;margin-bottom:12px;font-size:13px;border-left:4px solid var(--gold)">
+      ⚠️ <strong>Clientes por vencer:</strong> ${avisos.join(', ')} — llevan 25+ días sin usarte. ¡Escribiles!
+    </div>`;
+  } else {
+    list.innerHTML = '';
+  }
+
+  list.innerHTML += filtrados.map(c => {
+    const servicios = state.historial.filter(h => h.clienteId == c.id && h.estado === 'completado').length;
+    const totalGan = state.historial.filter(h => h.clienteId == c.id && h.estado === 'completado').reduce((s,h) => s+h.monto, 0);
+    const nivel = getNivelCliente(c.id);
+    const tel = c.tel ? c.tel.replace(/\D/g,'') : '';
+    const waBtn = tel ? `<button class="btn-whatsapp-client" onclick="waMensaje('${tel}','${c.nombre}')" style="margin-top:4px">📱 Escribir</button>` : '';
+    const diasInfo = nivel.diasSinUsar !== undefined ? `· ${nivel.diasSinUsar}d sin usar` : '';
+    return `<div class="list-item">
+      <div class="list-icon" style="background:#dbeafe;font-size:22px">👤</div>
+      <div class="list-info">
+        <div class="list-title">${c.nombre}</div>
+        <div class="list-sub">${c.tel || 'Sin tel.'}${c.dir ? ' · '+c.dir : ''}</div>
+        <div class="list-sub">${servicios} servicio(s) · ₡${fmt(totalGan)} ${diasInfo}</div>
+        <div style="margin-top:5px;display:flex;gap:6px;align-items:center;flex-wrap:wrap">
+          <span class="badge ${nivel.badge}">${nivel.label}</span>
+          ${nivel.descuento > 0 ? `<span class="badge badge-green">${nivel.descuento}% desc.</span>` : ''}
+          ${nivel.vencido ? `<span style="font-size:11px;color:var(--danger)">Sin actividad 30+ días</span>` : ''}
+        </div>
+        ${waBtn}
+      </div>
+      <button class="btn btn-danger btn-sm" onclick="deleteCliente(${c.id})" style="align-self:flex-start">✕</button>
+    </div>`;
+  }).join('');
+}
+
+function deleteCliente(id) {
+  state.clientes = state.clientes.filter(c => c.id !== id);
+  save(); renderClientes(); updateClientSelects(); toast('🗑️ Eliminado');
+}
+
+function updateClientSelects() {
+  const opts = '<option value="">-- Sin cliente --</option>' +
+    state.clientes.map(c => `<option value="${c.id}">${c.nombre}</option>`).join('');
+  ['save-cliente','ag-cliente'].forEach(id => {
+    document.getElementById(id).innerHTML = opts;
+  });
+}
+
+// ===== HISTORIAL =====
+function renderHistorial() {
+  const list = document.getElementById('historialList');
+  const completados = state.historial.filter(h => h.estado === 'completado');
+  if (completados.length === 0) {
+    list.innerHTML = '<div class="empty"><div class="empty-icon">📋</div><div class="empty-text">No hay servicios completados aún</div></div>';
+    return;
+  }
+  const icons = {ride:'🚗',mandado:'🛍️',tramite:'📋',pago:'📄',entrega:'📦',deposito:'🏦',especial:'✈️'};
+  const colors = {ride:'#dbeafe',mandado:'#fef9c3',tramite:'#f3e8ff',pago:'#dcfce7',entrega:'#ffedd5',deposito:'#f0fdf4',especial:'#ffe4e6'};
+  list.innerHTML = completados.map(h => `
+    <div class="list-item">
+      <div class="list-icon" style="background:${colors[h.tipo]||'#f3f4f6'}">${icons[h.tipo]||'🔧'}</div>
+      <div class="list-info">
+        <div class="list-title">${h.desc}</div>
+        <div class="list-sub">${h.clienteNombre} · ${new Date(h.fecha).toLocaleDateString('es-CR')}</div>
+        <span class="badge badge-green">✅ Completado</span>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
+        <div class="list-amount">₡${fmt(h.monto)}</div>
+        <button class="btn btn-sm" style="background:var(--navy);color:white;font-size:11px" onclick="abrirEditHistorial(${h.id})">✏️</button>
+        <button class="btn btn-danger btn-sm" style="font-size:11px" onclick="deleteHistorial(${h.id})">🗑️</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function deleteHistorial(id) {
+  if (!confirm('¿Borrar este registro del historial?')) return;
+  state.historial = state.historial.filter(h => h.id !== id);
+  save(); renderHistorial(); renderGanancias();
+  toast('🗑️ Registro eliminado');
+}
+
+function completeService(id) {
+  // Legacy - no longer used, kept for safety
+}
+
+function waMensaje(tel, nombre) {
+  const msg = `Hola ${nombre}! 👋 Te escribo para recordarte que seguís siendo parte del *Club Mariano* 🚗✨\n\n¿En qué te puedo ayudar hoy?\n\n_Tu tiempo es valioso, yo lo hago por ti_`;
+  window.open(`https://wa.me/506${tel}?text=${encodeURIComponent(msg)}`);
+}
+
+function clearHistorial() {
+  if (confirm('¿Borrar todo el historial?')) {
+    state.historial = []; save(); renderHistorial(); renderGanancias(); toast('🗑️ Historial limpiado');
+  }
+}
+
+// ===== GANANCIAS =====
+function renderGanancias() {
+  const now = new Date();
+  const hoy = new Date().toDateString();
+  const semanaAtras = new Date(now - 7*24*60*60*1000);
+  const mesActual = now.getMonth();
+  const añoActual = now.getFullYear();
+
+  const completados = state.historial.filter(h => h.estado === 'completado');
+
+  const ganHoy = completados.filter(h => new Date(h.fecha).toDateString() === hoy).reduce((s,h)=>s+h.monto,0);
+  const ganSem = completados.filter(h => new Date(h.fecha) >= semanaAtras).reduce((s,h)=>s+h.monto,0);
+  const ganMes = completados.filter(h => {
+    const d = new Date(h.fecha);
+    return d.getMonth() === mesActual && d.getFullYear() === añoActual;
+  }).reduce((s,h)=>s+h.monto,0);
+
+  document.getElementById('stat-hoy').textContent = '₡'+fmt(ganHoy);
+  document.getElementById('stat-semana').textContent = '₡'+fmt(ganSem);
+  document.getElementById('stat-mes').textContent = '₡'+fmt(ganMes);
+  document.getElementById('stat-servicios').textContent = state.historial.length;
+
+  // Por tipo
+  const tipos = {ride:'🚗 Ride',mandado:'🛍️ Mandado',tramite:'📋 Trámite',pago:'📄 Pagos',entrega:'📦 Entregas',deposito:'🏦 Depósitos',especial:'✈️ Especiales'};
+  const porTipo = {};
+  completados.forEach(h => { porTipo[h.tipo] = (porTipo[h.tipo]||0) + h.monto; });
+  const tipoHtml = Object.entries(porTipo).length ? Object.entries(porTipo).map(([t,v]) =>
+    `<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f3f4f6">
+      <span>${tipos[t]||t}</span><strong>₡${fmt(v)}</strong>
+    </div>`
+  ).join('') : '<div style="color:var(--gray);font-size:14px">Sin datos aún</div>';
+  document.getElementById('gananciasPorTipo').innerHTML = tipoHtml;
+
+  // Recientes
+  const recientes = completados.slice(0,5);
+  document.getElementById('gananciasRecientes').innerHTML = recientes.length ?
+    recientes.map(h => `<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f3f4f6;font-size:14px">
+      <div><div style="font-weight:600">${h.desc}</div><div style="color:var(--gray);font-size:12px">${new Date(h.fecha).toLocaleDateString('es-CR')}</div></div>
+      <div style="color:var(--success);font-weight:700">₡${fmt(h.monto)}</div>
+    </div>`).join('') :
+    '<div style="color:var(--gray);font-size:14px">Sin servicios completados</div>';
+}
+
+// ===== WHATSAPP =====
+function shareWhatsApp() {
+  const desc = getServiceDesc();
+  const origen = document.getElementById('origen') ? document.getElementById('origen').value.trim() : '';
+  const destino = document.getElementById('destino') ? document.getElementById('destino').value.trim() : '';
+  const mandadoOrigen = document.getElementById('mandado-origen') ? document.getElementById('mandado-origen').value.trim() : '';
+  const mandadoDestino = document.getElementById('mandado-destino') ? document.getElementById('mandado-destino').value.trim() : '';
+
+  let ruta = '';
+  if (currentService === 'ride' && origen && destino) {
+    ruta = `\n📍 De: ${origen}\n🏁 A: ${destino}`;
+  } else if (currentService === 'mandado' && (mandadoOrigen || mandadoDestino)) {
+    if (mandadoOrigen) ruta += `\n📍 Recogida: ${mandadoOrigen}`;
+    if (mandadoDestino) ruta += `\n🏪 Destino: ${mandadoDestino}`;
+    const mandadoEntrega = document.getElementById('mandado-entrega')?.value.trim();
+    if (mandadoEntrega) ruta += `\n🏁 Entrega: ${mandadoEntrega}`;
+  } else if (currentService === 'aero_salida') {
+    const o = document.getElementById('aero-salida-origen')?.value.trim();
+    if (o) ruta = `\n📍 Recogida: ${o}\n🏁 Destino: Aeropuerto Juan Santamaría`;
+    ruta += '\n🛣️ Peaje incluido · Sin espera';
+  } else if (currentService === 'aero_llegada') {
+    const d = document.getElementById('aero-llegada-destino')?.value.trim();
+    ruta = `\n📍 Recogida: Aeropuerto Juan Santamaría`;
+    if (d) ruta += `\n🏁 Entrega: ${d}`;
+    ruta += '\n⏱️ Espera 30 min incluida · 🛣️ Peaje incluido';
+  }
+
+  let extra = '';
+  if (currentService === 'especial') {
+    extra = currentGasto === 'cliente'
+      ? '\n⛽ Gasolina y viáticos: por cuenta del cliente'
+      : '\n⛽ Gasolina y viáticos: incluidos en el precio';
+  }
+  let discountLine = '';
+  if (currentDiscount > 0) {
+    discountLine = `\n\n⭐ *Club Mariano — ${currentDiscountLabel}*\n~~₡${fmt(lastQuoteBase)}~~ → *₡${fmt(lastQuote)}*\n🎉 Ahorrás ₡${fmt(lastQuoteBase - lastQuote)}`;
+  }
+  const precio = currentDiscount > 0
+    ? `₡${fmt(lastQuote)} (con descuento ${currentDiscountLabel})`
+    : `₡${fmt(lastQuote)}`;
+  const msg = `Hola! Te comparto la cotización:\n\n🚗 *Mariano - Servicios*\n📋 Servicio: ${desc}${ruta}${extra}\n💰 Total: ${precio}${discountLine}\n\n_Tu tiempo es valioso, yo lo hago por ti_ ✨`;
+  window.open('https://wa.me/?text='+encodeURIComponent(msg));
+}
+
+// ===== MODAL =====
+function closeModal(id) {
+  document.getElementById(id).classList.remove('show');
+}
+
+document.querySelectorAll('.modal-overlay').forEach(m => {
+  m.addEventListener('click', function(e) {
+    if (e.target === this) this.classList.remove('show');
+  });
+});
+
+// ===== TOAST =====
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ===== GOOGLE MAPS =====
+function abrirMaps() {
+  const origen = document.getElementById('origen').value.trim();
+  const destino = document.getElementById('destino').value.trim();
+  if (!origen || !destino) { toast('⚠️ Ingresá origen y destino'); return; }
+  const url = `https://www.google.com/maps/dir/${encodeURIComponent(origen)}/${encodeURIComponent(destino)}`;
+  window.open(url, '_blank');
+}
+
+function checkMapsBtn() {
+  const origen = document.getElementById('origen').value.trim();
+  const destino = document.getElementById('destino').value.trim();
+  const show = origen && destino;
+  document.getElementById('mapsBtn').style.display = show ? 'flex' : 'none';
+  document.getElementById('maps-hint').style.display = show ? 'block' : 'none';
+}
+
+// ===== NOTIFICACIONES =====
+let notifTimers = [];
+
+function requestNotifPermission() {
+  if (!('Notification' in window)) {
+    toast('⚠️ Tu navegador no soporta notificaciones');
+    return;
+  }
+  Notification.requestPermission().then(perm => {
+    if (perm === 'granted') {
+      localStorage.setItem('mar_notif', '1');
+      dismissBanner();
+      toast('🔔 Notificaciones activadas!');
+      scheduleAllNotifs();
+    } else {
+      toast('⚠️ Permiso denegado. Activalo en ajustes de Chrome');
+    }
+  });
+}
+
+function dismissBanner() {
+  document.getElementById('notifBanner').classList.add('hidden');
+  localStorage.setItem('mar_notif_dismissed', '1');
+}
+
+function checkNotifBanner() {
+  const perm = ('Notification' in window) ? Notification.permission : 'denied';
+  const dismissed = localStorage.getItem('mar_notif_dismissed');
+  if (perm === 'granted' || dismissed) {
+    document.getElementById('notifBanner').classList.add('hidden');
+  }
+  if (perm === 'granted') scheduleAllNotifs();
+}
+
+function scheduleAllNotifs() {
+  // Limpiar timers anteriores
+  notifTimers.forEach(t => clearTimeout(t));
+  notifTimers = [];
+
+  if (!('Notification' in window) || Notification.permission !== 'granted') return;
+
+  const now = Date.now();
+  state.agenda.forEach(ag => {
+    if (!ag.fecha || !ag.hora) return;
+    const eventTime = new Date(ag.fecha + 'T' + ag.hora).getTime();
+    const notifTime = eventTime - 30 * 60 * 1000; // 30 min antes
+    const delay = notifTime - now;
+    if (delay > 0 && delay < 7 * 24 * 60 * 60 * 1000) { // solo si es en los próximos 7 días
+      const t = setTimeout(() => {
+        new Notification('🚗 Mariano App — Recordatorio', {
+          body: `En 30 min: ${ag.servicio} con ${ag.clienteNombre} a las ${ag.hora}${ag.monto ? ' · ₡'+fmt(ag.monto) : ''}`,
+          icon: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="50" fill="%230d2461"/><text y=".9em" font-size="70" x="15">🚗</text></svg>',
+          badge: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="50" fill="%23c9931a"/></svg>',
+          tag: 'ag-' + ag.id,
+          requireInteraction: true,
+        });
+      }, delay);
+      notifTimers.push(t);
+    }
+  });
+}
+
+// ===== WHATSAPP CLIENTE =====
+function waCliente(tel, servicio, hora) {
+  const msg = `Hola! Te recuerdo que tenés agendado conmigo:\n\n📋 *${servicio}*\n🕐 Hora: ${hora}\n\n_Mariano — Tu tiempo es valioso_ 🚗`;
+  window.open('https://wa.me/506' + tel + '?text=' + encodeURIComponent(msg));
+}
+
+// ===== RESPALDO =====
+function exportarDatos() {
+  const datos = {
+    version: 1,
+    fecha: new Date().toISOString(),
+    clientes: state.clientes,
+    agenda: state.agenda,
+    historial: state.historial,
+    cierres: state.cierres,
+    kmInicial: state.kmInicial,
+    config: {
+      gas_precio: localStorage.getItem('mar_gas_precio') || '628',
+      rendimiento: localStorage.getItem('mar_rendimiento') || '10',
+      desgaste: localStorage.getItem('mar_desgaste') || '40',
+    }
+  };
+  const json = JSON.stringify(datos, null, 2);
+  const blob = new Blob([json], {type: 'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const fecha = new Date().toLocaleDateString('es-CR').replace(/\//g,'-');
+  a.href = url;
+  a.download = `mariano-respaldo-${fecha}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  toast('✅ Respaldo exportado — guardalo en Drive o WhatsApp');
+}
+
+function importarDatos(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const datos = JSON.parse(e.target.result);
+      if (!datos.clientes || !datos.historial) {
+        toast('⚠️ Archivo inválido'); return;
+      }
+      if (!confirm(`¿Importar respaldo del ${new Date(datos.fecha).toLocaleDateString('es-CR')}?\n\nEsto reemplaza todos tus datos actuales.`)) return;
+      state.clientes = datos.clientes || [];
+      state.agenda = datos.agenda || [];
+      state.historial = datos.historial || [];
+      state.cierres = datos.cierres || [];
+      state.kmInicial = datos.kmInicial || null;
+      if (datos.config) {
+        if (datos.config.gas_precio) localStorage.setItem('mar_gas_precio', datos.config.gas_precio);
+        if (datos.config.rendimiento) localStorage.setItem('mar_rendimiento', datos.config.rendimiento);
+        if (datos.config.desgaste) localStorage.setItem('mar_desgaste', datos.config.desgaste);
+      }
+      save();
+      renderAll();
+      toast('✅ Datos restaurados correctamente');
+    } catch(err) {
+      toast('⚠️ Error al leer el archivo');
+    }
+  };
+  reader.readAsText(file);
+  event.target.value = '';
+}
+
+// ===== EDITAR AGENDA =====
+function abrirEditAgenda(id) {
+  const ag = state.agenda.find(a => a.id === id);
+  if (!ag) return;
+  updateClientSelects();
+  const opts = '<option value="">-- Sin cliente --</option>' +
+    state.clientes.map(c => `<option value="${c.id}" ${c.id == ag.clienteId ? 'selected' : ''}>${c.nombre}</option>`).join('');
+  document.getElementById('edit-ag-cliente').innerHTML = opts;
+  document.getElementById('edit-ag-id').value = id;
+  document.getElementById('edit-ag-servicio').value = ag.servicio || '';
+  document.getElementById('edit-ag-fecha').value = ag.fecha || '';
+  document.getElementById('edit-ag-hora').value = ag.hora || '';
+  document.getElementById('edit-ag-duracion').value = ag.duracion || 30;
+  document.getElementById('edit-ag-monto').value = ag.monto || 0;
+  document.getElementById('edit-ag-km').value = ag.km || 0;
+  document.getElementById('editAgendaModal').classList.add('show');
+}
+
+function guardarEditAgenda() {
+  const id = parseInt(document.getElementById('edit-ag-id').value);
+  const ag = state.agenda.find(a => a.id === id);
+  if (!ag) return;
+  const clienteId = document.getElementById('edit-ag-cliente').value;
+  const cliente = clienteId ? state.clientes.find(c => c.id == clienteId) : null;
+  const hora = document.getElementById('edit-ag-hora').value;
+  const duracion = parseInt(document.getElementById('edit-ag-duracion').value) || 30;
+  let horaFin = '';
+  if (hora) {
+    const [h, m] = hora.split(':').map(Number);
+    const fin = new Date(2000, 0, 1, h, m + duracion);
+    horaFin = fin.getHours().toString().padStart(2,'0') + ':' + fin.getMinutes().toString().padStart(2,'0');
+  }
+  ag.servicio = document.getElementById('edit-ag-servicio').value;
+  ag.fecha = document.getElementById('edit-ag-fecha').value;
+  ag.hora = hora;
+  ag.horaFin = horaFin;
+  ag.duracion = duracion;
+  ag.monto = parseFloat(document.getElementById('edit-ag-monto').value) || 0;
+  ag.km = parseFloat(document.getElementById('edit-ag-km').value) || 0;
+  ag.clienteId = clienteId || null;
+  ag.clienteNombre = cliente ? cliente.nombre : 'Sin cliente';
+  save(); renderAgenda();
+  closeModal('editAgendaModal');
+  toast('✅ Servicio actualizado');
+}
+
+// ===== EDITAR HISTORIAL =====
+function abrirEditHistorial(id) {
+  const h = state.historial.find(h => h.id === id);
+  if (!h) return;
+  updateClientSelects();
+  const opts = '<option value="">-- Sin cliente --</option>' +
+    state.clientes.map(c => `<option value="${c.id}" ${c.id == h.clienteId ? 'selected' : ''}>${c.nombre}</option>`).join('');
+  document.getElementById('edit-hist-cliente').innerHTML = opts;
+  document.getElementById('edit-hist-id').value = id;
+  document.getElementById('edit-hist-desc').value = h.desc || '';
+  document.getElementById('edit-hist-monto').value = h.monto || 0;
+  document.getElementById('edit-hist-km').value = h.km || 0;
+  document.getElementById('edit-hist-fecha').value = h.fecha ? h.fecha.split('T')[0] : '';
+  document.getElementById('editHistorialModal').classList.add('show');
+}
+
+function guardarEditHistorial() {
+  const id = parseInt(document.getElementById('edit-hist-id').value);
+  const h = state.historial.find(h => h.id === id);
+  if (!h) return;
+  const clienteId = document.getElementById('edit-hist-cliente').value;
+  const cliente = clienteId ? state.clientes.find(c => c.id == clienteId) : null;
+  h.desc = document.getElementById('edit-hist-desc').value;
+  h.monto = parseFloat(document.getElementById('edit-hist-monto').value) || 0;
+  h.km = parseFloat(document.getElementById('edit-hist-km').value) || 0;
+  h.clienteId = clienteId || null;
+  h.clienteNombre = cliente ? cliente.nombre : 'Sin cliente';
+  const fecha = document.getElementById('edit-hist-fecha').value;
+  if (fecha) h.fecha = new Date(fecha + 'T12:00:00').toISOString();
+  save(); renderHistorial(); renderGanancias();
+  closeModal('editHistorialModal');
+  toast('✅ Registro actualizado');
+}
+
+// ===== CIERRE DE DÍA =====
+let lastCierre = null;
+
+function guardarKmInicial() {
+  const km = document.getElementById('km-ini-manana').value;
+  if (!km) { toast('⚠️ Ingresá el km inicial'); return; }
+  const hoy = new Date().toLocaleDateString('en-CA');
+  state.kmInicial = { km, fecha: hoy };
+  save();
+  mostrarKmInicialGuardado();
+  document.getElementById('cierre-km-ini').value = km;
+  toast('✅ Km inicial guardado para hoy');
+}
+
+function mostrarKmInicialGuardado() {
+  const data = state.kmInicial;
+  const hoy = new Date().toLocaleDateString('en-CA');
+  const display = document.getElementById('km-ini-guardado-display');
+  if (data && data.fecha === hoy) {
+    display.style.display = 'block';
+    display.innerHTML = `✅ Km inicial de hoy: <strong>${parseInt(data.km).toLocaleString('es-CR')} km</strong> — ya cargado en el cierre`;
+    document.getElementById('cierre-km-ini').value = data.km;
+    document.getElementById('km-ini-manana').value = data.km;
+  } else {
+    display.style.display = 'none';
+  }
+}
+
+function calcularCierre() {
+  const kmIni = parseFloat(document.getElementById('cierre-km-ini').value) || 0;
+  const kmFin = parseFloat(document.getElementById('cierre-km-fin').value) || 0;
+  const gasHoy = parseFloat(document.getElementById('cierre-gas').value) || 0;
+  const desgaste = parseFloat(document.getElementById('config-desgaste').value) || 40;
+
+  if (!kmIni || !kmFin || kmFin <= kmIni) {
+    toast('⚠️ Revisá los km del odómetro'); return;
+  }
+
+  const hoy = new Date().toLocaleDateString('en-CA');
+  const serviciosHoy = state.historial.filter(h => {
+    if (h.estado !== 'completado') return false;
+    const fechaLocal = new Date(h.fecha).toLocaleDateString('en-CA');
+    return fechaLocal === hoy;
+  });
+
+  const kmTotales = kmFin - kmIni;
+  const kmCobrados = serviciosHoy.reduce((s, h) => s + (h.km || 0), 0);
+  const kmVacio = Math.max(0, kmTotales - kmCobrados);
+  const cobradoHoy = serviciosHoy.reduce((s, h) => s + h.monto, 0);
+  const costoDesgaste = Math.round(kmTotales * desgaste);
+  const gananciaReal = cobradoHoy - gasHoy - costoDesgaste;
+  const serviciosCount = serviciosHoy.length;
+
+  lastCierre = { kmIni, kmFin, kmTotales, kmCobrados, kmVacio, cobradoHoy, gasHoy, costoDesgaste, gananciaReal, serviciosCount, fecha: hoy };
+
+  const color = gananciaReal > 0 ? '#86efac' : '#fca5a5';
+  document.getElementById('cierreDetalle').innerHTML = `
+    <div style="display:grid;gap:8px">
+      <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.15)">
+        <span>🚗 Km recorridos</span><strong>${fmt(kmTotales)} km</strong>
+      </div>
+      <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.15)">
+        <span>💼 Km cobrados</span><strong>${fmt(kmCobrados)} km</strong>
+      </div>
+      <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.15)">
+        <span>🕳️ Km en vacío</span><strong style="color:#fca5a5">${fmt(kmVacio)} km</strong>
+      </div>
+      <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.15)">
+        <span>📋 Servicios completados</span><strong>${serviciosCount}</strong>
+      </div>
+      <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.15)">
+        <span>💰 Total cobrado</span><strong>₡${fmt(cobradoHoy)}</strong>
+      </div>
+      <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.15)">
+        <span>⛽ Gas echado</span><strong style="color:#fca5a5">-₡${fmt(gasHoy)}</strong>
+      </div>
+      <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.15)">
+        <span>🔧 Desgaste (${fmt(kmTotales)} km)</span><strong style="color:#fca5a5">-₡${fmt(costoDesgaste)}</strong>
+      </div>
+      <div style="display:flex;justify-content:space-between;padding:10px 0;font-size:18px;font-weight:900">
+        <span>💵 Ganancia neta</span><strong style="color:${color}">₡${fmt(gananciaReal)}</strong>
+      </div>
+    </div>`;
+  document.getElementById('cierreResult').style.display = 'block';
+}
+
+function guardarCierre() {
+  if (!lastCierre) return;
+  state.cierres.unshift({ ...lastCierre, id: Date.now() });
+  save();
+  renderCierreHistorial();
+  toast('✅ Cierre guardado');
+  document.getElementById('cierreResult').style.display = 'none';
+  document.getElementById('cierre-km-ini').value = '';
+  document.getElementById('cierre-km-fin').value = '';
+  document.getElementById('cierre-gas').value = '';
+}
+
+function renderCierreHistorial() {
+  const el = document.getElementById('cierreHistorial');
+  if (!state.cierres.length) {
+    el.innerHTML = '<div style="color:var(--gray);font-size:14px">No hay cierres guardados</div>';
+    return;
+  }
+  el.innerHTML = state.cierres.slice(0, 10).map(c => `
+    <div style="padding:12px 0;border-bottom:1px solid #f3f4f6">
+      <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+        <strong style="font-size:14px">${new Date(c.fecha+'T12:00:00').toLocaleDateString('es-CR',{weekday:'short',day:'numeric',month:'short'})}</strong>
+        <strong style="color:${c.gananciaReal>0?'var(--success)':'var(--danger)'}">₡${fmt(c.gananciaReal)}</strong>
+      </div>
+      <div style="font-size:12px;color:var(--gray)">
+        ${c.serviciosCount} servicios · ${fmt(c.kmTotales)} km · ${fmt(c.kmVacio)} km vacío · Cobrado ₡${fmt(c.cobradoHoy)}
+      </div>
+    </div>
+  `).join('');
+}
+
+// ===== MODO OCUPADO =====
+let isBusy = false;
+
+function toggleBusy() {
+  isBusy = !isBusy;
+  const btn = document.getElementById('busyBtn');
+  btn.textContent = isBusy ? '🔴 En servicio' : '🟢 Disponible';
+  btn.classList.toggle('active', isBusy);
+
+  if (isBusy) {
+    // Open WhatsApp with busy message ready to paste as auto-reply
+    const msg = `Hola! 👋 Gracias por escribirme. En este momento estoy en medio de un servicio 🚗 Te respondo tan pronto termine. ¡Gracias por tu paciencia! 😊\n\n_Mariano — Tu tiempo es valioso_`;
+    if (confirm('¿Querés copiar el mensaje de "ocupado" para usarlo en WhatsApp?')) {
+      navigator.clipboard.writeText(msg).then(() => {
+        toast('✅ Mensaje copiado — pegalo en WhatsApp');
+      }).catch(() => {
+        // Fallback: open WhatsApp
+        window.open('https://wa.me/?text=' + encodeURIComponent(msg));
+      });
+    }
+  } else {
+    toast('🟢 Modo disponible activado');
+  }
+}
+
+init();
+</script>
+</body>
+</html>
